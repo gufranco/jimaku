@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.1.0](https://github.com/gufranco/jimaku/compare/v1.0.0...v1.1.0) (2026-10-28)
+
+
+### Features
+
+* fit terminal output in 80 columns ([3c0eef8](https://github.com/gufranco/jimaku/commit/3c0eef8e2a3a99c1db67546e293dc812f103d80e))
+
 # 1.0.0 (2026-10-28)
 
 
