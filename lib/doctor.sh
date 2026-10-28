@@ -4,13 +4,7 @@
 . "${JM_LIB:?}/state.sh"
 
 jm_doctor_row() {
-  jm_dw_line="$(printf '%-18s %-8s %s' "$1" "$2" "$3")"
-  if [ "${#jm_dw_line}" -le "${JM_WIDTH}" ] || ! jm_terminal; then
-    printf '%s\n' "${jm_dw_line}"
-    return 0
-  fi
-  printf '%-18s %s\n' "$1" "$2"
-  printf '  %s\n' "$3" | jm_wrap 2
+  printf '%-18s %-8s %s\n' "$1" "$2" "$3"
 }
 
 jm_flavor_version() {

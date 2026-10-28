@@ -19,7 +19,7 @@
 
 </div>
 
-コマンドは1つ、テストは86件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
+コマンドは1つ、テストは84件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
 
 ---
 
@@ -135,7 +135,7 @@ jimaku --dry-run .                                 # 対象になる動画を確
 | コマンド | 説明 |
 |:---------|:-----|
 | `make lint` | すべてのスクリプト、テスト、補完に ShellCheck を、man ページに mandoc をかけます |
-| `make test` | システムの `sh` で86件の `bats` テスト |
+| `make test` | システムの `sh` で84件の `bats` テスト |
 | `make test-all` | 同じテストをすべてのシェルで。macOS では bash と zsh の両方の版を含みます |
 | `make coverage` | bashcov の行カバレッジ。CI と同じ100%の基準です |
 

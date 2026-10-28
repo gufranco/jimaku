@@ -19,7 +19,7 @@
 
 </div>
 
-一條指令，86 個測試，10 個 shell 模組，除了 POSIX 系統和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
+一條指令，84 個測試，10 個 shell 模組，除了 POSIX 系統和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
 
 ---
 
@@ -135,7 +135,7 @@ jimaku --dry-run .                                 # 查看會處理哪些影片
 | 指令 | 說明 |
 |:-----|:-----|
 | `make lint` | 對所有腳本、測試和補全執行 ShellCheck，對 man 手冊執行 mandoc |
-| `make test` | 在系統 `sh` 下執行 86 個 `bats` 測試 |
+| `make test` | 在系統 `sh` 下執行 84 個 `bats` 測試 |
 | `make test-all` | 在所有 shell 下執行同樣的測試，macOS 上包括 bash 和 zsh 的兩個版本 |
 | `make coverage` | bashcov 行覆蓋率，門檻與 CI 相同，為 100% |
 

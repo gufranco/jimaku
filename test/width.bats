@@ -42,18 +42,6 @@ widest_line() {
   [[ "${widest}" -le 80 ]]
 }
 
-@test "doctor never prints a line wider than 80 columns" {
-  # Arrange
-  local page widest
-
-  # Act
-  page="$(JIMAKU_TERMINAL=1 jm_test_run doctor || true)"
-
-  # Assert
-  widest="$(printf '%s\n' "${page}" | widest_line)"
-  [[ "${widest}" -le 80 ]]
-}
-
 @test "an error longer than 80 columns wraps between words" {
   # Arrange
   local message="the subtitle provider answered with a page that was not a subtitle, so nothing was saved for this video"
@@ -93,25 +81,12 @@ widest_line() {
   [[ "${lines[1]}" == "        ${folder}" ]]
 }
 
-@test "a doctor row too wide for 80 columns puts its detail on the next line" {
+@test "a doctor row stays on one line on a terminal, however long" {
   # Arrange
-  local found="/opt/homebrew/opt/uutils-coreutils/libexec/uubin/sed"
+  local expected="sed                ok       /opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10"
 
   # Act
-  JIMAKU_TERMINAL=1 run jm_test_call jm_doctor_row sed ok "${found}, uutils 0.12.0"
-
-  # Assert
-  [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" == "sed                ok" ]]
-  [[ "${lines[1]}" == "  ${found}, uutils 0.12.0" ]]
-}
-
-@test "a doctor row that fits in 80 columns stays on one line" {
-  # Arrange
-  local expected="file               ok       /usr/bin/file, bsd"
-
-  # Act
-  JIMAKU_TERMINAL=1 run jm_test_call jm_doctor_row file ok "/usr/bin/file, bsd"
+  JIMAKU_TERMINAL=1 run jm_test_call jm_doctor_row "sed" ok "/opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10"
 
   # Assert
   [[ "${status}" -eq 0 ]]

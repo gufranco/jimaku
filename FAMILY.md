@@ -75,7 +75,7 @@ No colour, no emoji, no bracketed level tags.
 
 - A long step shows one progress line: `<Verb> NNN%  <rate>  XmYYs left`. On a terminal it redraws in place; otherwise it prints once per 10 percent.
 - The last line states the result in a full sentence, such as `Ejected. /dev/disk4 is safe to remove.`
-- Every line printed to a terminal fits in 80 columns, the default width of Terminal, iTerm2, xterm and GNOME Terminal. A longer message wraps between words, and a summary line continues under its value. A single word wider than 80 columns, such as a long path, is printed whole on its own line. Sent to a pipe or a file, a message stays on one line, so a script can read it. Tests check that `help`, `version` and `doctor` stay within 80 columns.
+- Every line printed to a terminal fits in 80 columns, the default width of Terminal, iTerm2, xterm and GNOME Terminal. A longer message wraps between words, and a summary line continues under its value. A single word wider than 80 columns, such as a long path, is printed whole on its own line. Sent to a pipe or a file, a message stays on one line, so a script can read it. `doctor` is exempt: its rows are technical, so each stays on one line at any width. Tests check that `help` and `version` stay within 80 columns.
 
 ## Diagnostics
 
@@ -108,14 +108,7 @@ A row for a core tool, such as `awk`, `sed`, `dd`, `od`, `cmp`, `tr` or `date`, 
 ```text
 awk                ok       /usr/bin/awk, bsd 20200816
 dd                 ok       /usr/bin/dd, uutils 0.10.0
-sed                ok       /usr/local/bin/sed, gnu 4.10
-```
-
-On a terminal, a row that would pass 80 columns prints the dependency and its state, then the path and note on the next line, indented two spaces:
-
-```text
-sha256sum          ok
-  /opt/homebrew/opt/uutils-coreutils/libexec/uubin/sha256sum, uutils 0.12.0
+sed                ok       /opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10
 ```
 
 The flavor is `gnu`, `uutils`, `bsd`, `mawk`, `busybox` or `unknown`. It comes from the tool's own `--version` answer, then from where it is installed, then from the system it runs on.
