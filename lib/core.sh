@@ -3,7 +3,7 @@
 # shellcheck source=SCRIPTDIR/state.sh
 . "${JM_LIB:?}/state.sh"
 
-JIMAKU_VERSION="1.1.0"
+JIMAKU_VERSION="1.1.1"
 
 jm_version() {
   printf '%s %s\n' "${JM_PROG}" "${JIMAKU_VERSION}"
