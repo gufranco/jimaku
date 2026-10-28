@@ -13,7 +13,7 @@ permissions:
 jobs:
   lint:
     concurrency:
-      group: ci-${{ github.ref }}-${{ github.job }}-${{ strategy.job-index }}
+      group: ci-${{ github.ref }}-lint-${{ strategy.job-index }}
       cancel-in-progress: true
     name: lint
     runs-on: ubuntu-26.04
@@ -44,7 +44,7 @@ jobs:
 
   test:
     concurrency:
-      group: ci-${{ github.ref }}-${{ github.job }}-${{ strategy.job-index }}
+      group: ci-${{ github.ref }}-test-${{ strategy.job-index }}
       cancel-in-progress: true
     name: test (${{ matrix.runner }}, ${{ matrix.shell }}, ${{ matrix.toolset }})
     runs-on: ${{ matrix.runner }}
@@ -132,7 +132,7 @@ jobs:
 
   coverage:
     concurrency:
-      group: ci-${{ github.ref }}-${{ github.job }}-${{ strategy.job-index }}
+      group: ci-${{ github.ref }}-coverage-${{ strategy.job-index }}
       cancel-in-progress: true
     name: coverage (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
@@ -168,7 +168,7 @@ jobs:
 
   coverage-gate:
     concurrency:
-      group: ci-${{ github.ref }}-${{ github.job }}-${{ strategy.job-index }}
+      group: ci-${{ github.ref }}-coverage-gate-${{ strategy.job-index }}
       cancel-in-progress: true
     name: coverage gate
     needs: coverage
