@@ -19,20 +19,20 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 
 </div>
 
-One command, 65 tests, 9 shell modules, and nothing to install beyond a POSIX system and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
+One command, 77 tests, 10 shell modules, and nothing to install beyond a POSIX system and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
 
 ---
 
 ```console
-$ jimaku ~/Movies
+$ jimaku --language pt-BR ~/Movies
 
 Videos: 3 in /Users/me/Movies
 Plan:   pt-BR subtitles, saved as UTF-8 next to each video
         any subtitle already there is replaced
 
-/Users/me/Movies/Metropolis (1927).mkv: saved a pt-BR subtitle.
+/Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
 /Users/me/Movies/Metropolis (1927).en.srt: converted from iso-8859-1 to UTF-8.
-/Users/me/Movies/Nosferatu (1922).mp4: saved a pt-BR subtitle.
+/Users/me/Movies/Nosferatu (1922).mp4: saved a subtitle in pt-BR.
 jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General (1926).avi.
 Saved pt-BR subtitles for 2 of 3 videos.
 ```
@@ -80,20 +80,24 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | Command | Purpose |
 |:--------|:--------|
 | `jimaku [options] [video\|folder...]` | Fetch a subtitle for each video, and for every video in each folder; the current folder when none is given |
-| `jimaku` with no arguments | Ask for the folder or video, offering the current folder, when run in a terminal |
+| `jimaku` with no arguments | Ask for the folder or video, offering the current folder, and then for the language when none is set, when run in a terminal |
 | `jimaku doctor` | List subliminal and the text tools, with the flavor and version of each |
 | `jimaku version`, `jimaku help` | Print the version or the full usage page |
 
 | Option | Effect |
 |:-------|:-------|
-| `--language CODE` | The subtitle language, an IETF code such as `pt-BR`, `en` or `es`. Default `pt-BR` |
+| `--language CODE` | The subtitle language, an IETF code such as `en`, `pt-BR` or `es`. Default `JIMAKU_LANGUAGE`, else asked in a terminal, else `en` |
 | `--force`, `--no-force` | Replace a subtitle that is already there, or skip a video that has one. Default yes |
 | `--hearing-impaired`, `--no-hearing-impaired` | Put subtitles for the hearing impaired first, or last. Default no |
 | `--dry-run` | List every video and download nothing |
 
+| Variable | Effect |
+|:---------|:-------|
+| `JIMAKU_LANGUAGE` | The subtitle language when `--language` is not given, such as `pt-BR`. Set it in your shell profile to make it your default |
+
 ```bash
 jimaku ~/Movies                                    # every video in Movies
-jimaku --language en "Metropolis (1927).mkv"       # one video, in English
+jimaku --language pt-BR "Metropolis (1927).mkv"    # one video, in Brazilian Portuguese
 jimaku --dry-run .                                 # see which videos would be fetched
 ```
 
@@ -112,6 +116,7 @@ jimaku --dry-run .                                 # see which videos would be f
 
 - A subtitle is rewritten through a temporary file and then moved into place, so an interrupted run never leaves half a file. A subtitle that cannot be converted stays exactly as it was, with a warning.
 - jimaku works with subliminal 2.2, the version Ubuntu packages, and with the current one. Where subliminal has subtitle categories, `--hearing-impaired` puts those subtitles first and the default puts them last; with an older subliminal, the default leaves the choice to subliminal.
+- With neither `--language` nor `JIMAKU_LANGUAGE`, a run in a terminal lists twelve common languages and takes a number or any code, with Enter picking `en`; outside a terminal it uses `en`. English is `en`, never `en-US`: the subtitle providers list English without a region, so `en-US` matches nothing.
 
 ## Portability
 

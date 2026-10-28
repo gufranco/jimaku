@@ -14,6 +14,7 @@ if [ "${2:-}" = "--help" ]; then
   printf '%s\n' '  -hi, --hearing-impaired'
   exit 0
 fi
+language="${3:-und}"
 for video; do :; done
 case "${video}" in
 *"${FAKE_FAIL:-//}"*)
@@ -27,8 +28,8 @@ case "${video}" in
 *) ;;
 esac
 if [ -n "${FAKE_SOURCE:-}" ]; then
-  cp -f "${FAKE_SOURCE}" "${video%.*}.pt-BR.srt"
+  cp -f "${FAKE_SOURCE}" "${video%.*}.${language}.srt"
 else
-  printf '%s\n' 1 '00:00:01,000 --> 00:00:02,000' 'Ola' >"${video%.*}.pt-BR.srt"
+  printf '%s\n' 1 '00:00:01,000 --> 00:00:02,000' 'Ola' >"${video%.*}.${language}.srt"
 fi
 printf '%s\n' '1 video collected / 0 video ignored / 0 error' 'Downloaded 1 subtitle'

@@ -2,7 +2,7 @@ complete -c jimaku -n __fish_use_subcommand -a doctor -d 'check the tools jimaku
 complete -c jimaku -n __fish_use_subcommand -a version -d 'print the version'
 complete -c jimaku -n __fish_use_subcommand -a help -d 'print usage'
 
-complete -c jimaku -l language -x -a 'pt-BR pt en es fr de it ja' -d 'the subtitle language, an IETF code'
+complete -c jimaku -l language -x -a 'en es pt-BR fr de it pt ru ar ja ko zh' -d 'the subtitle language, an IETF code'
 complete -c jimaku -l force -d 'replace a subtitle that is already there'
 complete -c jimaku -l no-force -d 'skip a video that already has a subtitle'
 complete -c jimaku -l hearing-impaired -d 'put subtitles for the hearing impaired first'

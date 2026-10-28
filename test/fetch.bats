@@ -6,6 +6,7 @@ source "${BATS_TEST_DIRNAME:-.}/helpers.bash"
 setup() {
   WORK="$(mktemp -d "${BATS_TMPDIR:-/tmp}/jm-fetch.XXXXXX")"
   WORK="$(cd "${WORK}" && pwd -P)"
+  unset JIMAKU_LANGUAGE JM_LANGUAGE
   FILMS="${WORK}/films"
   mkdir -p "${FILMS}"
   export FAKE_LOG="${WORK}/calls.log"
@@ -33,7 +34,7 @@ download_calls() {
   grep '^download -l' "${FAKE_LOG}"
 }
 
-@test "a single video gets a pt-BR subtitle saved as UTF-8 next to it" {
+@test "a single video gets an English subtitle by default, saved as UTF-8 next to it" {
   # Arrange
   videos "Night of the Living Dead (1968).mkv"
 
@@ -42,8 +43,8 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == $'\n'"Video:  ${FILMS}/Night of the Living Dead (1968).mkv"$'\n'"Plan:   pt-BR subtitles, saved as UTF-8 next to each video"$'\n'"        any subtitle already there is replaced"$'\n\n'"${FILMS}/Night of the Living Dead (1968).mkv: saved a pt-BR subtitle."$'\n'"Saved pt-BR subtitles for 1 video." ]]
-  [[ -f "${FILMS}/Night of the Living Dead (1968).pt-BR.srt" ]]
+  [[ "${output}" == $'\n'"Video:  ${FILMS}/Night of the Living Dead (1968).mkv"$'\n'"Plan:   en subtitles, saved as UTF-8 next to each video"$'\n'"        any subtitle already there is replaced"$'\n\n'"${FILMS}/Night of the Living Dead (1968).mkv: saved a subtitle in en."$'\n'"Saved en subtitles for 1 video." ]]
+  [[ -f "${FILMS}/Night of the Living Dead (1968).en.srt" ]]
 }
 
 @test "subliminal is asked for the language, UTF-8, a forced download and plain subtitles first" {
@@ -56,7 +57,7 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   run download_calls
-  [[ "${output}" == "download -l pt-BR -e utf-8 -f -C n,fo,hi -- ${FILMS}/a.mkv" ]]
+  [[ "${output}" == "download -l en -e utf-8 -f -C n,fo,hi -- ${FILMS}/a.mkv" ]]
 }
 
 @test "--language, --no-force and --hearing-impaired change what subliminal is asked" {
@@ -64,13 +65,13 @@ download_calls() {
   videos a.mkv
 
   # Act
-  run jm_test_run --language en --no-force --hearing-impaired "${FILMS}"
+  run jm_test_run --language pt-BR --no-force --hearing-impaired "${FILMS}"
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"Plan:   en subtitles, saved as UTF-8 next to each video"$'\n'"        a video that already has one is skipped"$'\n'"        subtitles for the hearing impaired come first"* ]]
+  [[ "${output}" == *"Plan:   pt-BR subtitles, saved as UTF-8 next to each video"$'\n'"        a video that already has one is skipped"$'\n'"        subtitles for the hearing impaired come first"* ]]
   run download_calls
-  [[ "${output}" == "download -l en -e utf-8 -C hi,n,fo -- ${FILMS}/a.mkv" ]]
+  [[ "${output}" == "download -l pt-BR -e utf-8 -C hi,n,fo -- ${FILMS}/a.mkv" ]]
 }
 
 @test "an older subliminal without subtitle categories gets -hi for the hearing impaired" {
@@ -96,7 +97,7 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   run download_calls
-  [[ "${output}" == "download -l pt-BR -e utf-8 -f -- ${FILMS}/a.mkv" ]]
+  [[ "${output}" == "download -l en -e utf-8 -f -- ${FILMS}/a.mkv" ]]
 }
 
 @test "a folder fetches for each video in it and leaves other files, hidden files and subfolders alone" {
@@ -110,9 +111,9 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == *"Videos: 2 in ${FILMS}"* ]]
-  [[ "${output}" == *"Saved pt-BR subtitles for 2 videos." ]]
+  [[ "${output}" == *"Saved en subtitles for 2 videos." ]]
   run download_calls
-  [[ "${output}" == "download -l pt-BR -e utf-8 -f -C n,fo,hi -- ${FILMS}/a.mkv"$'\n'"download -l pt-BR -e utf-8 -f -C n,fo,hi -- ${FILMS}/b.MP4" ]]
+  [[ "${output}" == "download -l en -e utf-8 -f -C n,fo,hi -- ${FILMS}/a.mkv"$'\n'"download -l en -e utf-8 -f -C n,fo,hi -- ${FILMS}/b.MP4" ]]
 }
 
 @test "every video extension subliminal reads is picked up" {
@@ -140,7 +141,7 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == *"Videos: 3 in 3 places"* ]]
-  [[ "${output}" == *"Dry run: 3 videos would get a pt-BR subtitle. Nothing was downloaded." ]]
+  [[ "${output}" == *"Dry run: 3 videos would get a subtitle in en. Nothing was downloaded." ]]
 }
 
 @test "a dry run lists every video and never calls subliminal" {
@@ -152,7 +153,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"        dry run: list each video and download nothing"$'\n\n'"${FILMS}/a.mkv"$'\n'"${FILMS}/b.mkv"$'\n'"Dry run: 2 videos would get a pt-BR subtitle. Nothing was downloaded." ]]
+  [[ "${output}" == *"        dry run: list each video and download nothing"$'\n\n'"${FILMS}/a.mkv"$'\n'"${FILMS}/b.mkv"$'\n'"Dry run: 2 videos would get a subtitle in en. Nothing was downloaded." ]]
   [[ ! -e "${FAKE_LOG}" ]]
 }
 
@@ -167,7 +168,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"Dry run: 1 video would get a pt-BR subtitle. Nothing was downloaded." ]]
+  [[ "${output}" == *"Dry run: 1 video would get a subtitle in en. Nothing was downloaded." ]]
 }
 
 @test "a run without subliminal stops before any video and says how to install it" {
@@ -217,7 +218,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 1 ]]
-  [[ "${output}" == *"jimaku: warning: no pt-BR subtitle found for ${FILMS}/rare.mkv."$'\n'"Saved pt-BR subtitles for 1 of 2 videos." ]]
+  [[ "${output}" == *"jimaku: warning: no en subtitle found for ${FILMS}/rare.mkv."$'\n'"Saved en subtitles for 1 of 2 videos." ]]
 }
 
 @test "subliminal failing on a video is reported with what it said" {
@@ -229,7 +230,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 1 ]]
-  [[ "${output}" == *"jimaku: subliminal failed for ${FILMS}/a.mkv."$'\n'"jimaku: subliminal said: Error: every provider failed"$'\n'"jimaku: subliminal said: Try again later"$'\n'"No pt-BR subtitle was saved." ]]
+  [[ "${output}" == *"jimaku: subliminal failed for ${FILMS}/a.mkv."$'\n'"jimaku: subliminal said: Error: every provider failed"$'\n'"jimaku: subliminal said: Try again later"$'\n'"No en subtitle was saved." ]]
 }
 
 @test "a Latin-1 subtitle is converted to UTF-8" {
@@ -242,9 +243,9 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"${FILMS}/a.pt-BR.srt: converted from iso-8859-1 to UTF-8."* ]]
+  [[ "${output}" == *"${FILMS}/a.en.srt: converted from iso-8859-1 to UTF-8."* ]]
   local bytes
-  bytes="$(jm_test_bytes "${FILMS}/a.pt-BR.srt")"
+  bytes="$(jm_test_bytes "${FILMS}/a.en.srt")"
   [[ "${bytes}" == *"4f6cc3a12c20636f7261c3a7c3a36f0a" ]]
 }
 
@@ -259,9 +260,9 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"${FILMS}/a.pt-BR.srt: converted from WINDOWS-1252 to UTF-8."* ]]
+  [[ "${output}" == *"${FILMS}/a.en.srt: converted from WINDOWS-1252 to UTF-8."* ]]
   local bytes
-  bytes="$(jm_test_bytes "${FILMS}/a.pt-BR.srt")"
+  bytes="$(jm_test_bytes "${FILMS}/a.en.srt")"
   [[ "${bytes}" == *"e2809c4f6cc3a1e2809d0a" ]]
 }
 
@@ -277,7 +278,7 @@ download_calls() {
   [[ "${status}" -eq 0 ]]
   [[ "${output}" != *"converted"* ]]
   local bytes
-  bytes="$(jm_test_bytes "${FILMS}/a.pt-BR.srt")"
+  bytes="$(jm_test_bytes "${FILMS}/a.en.srt")"
   [[ "${bytes}" == "310a30303a30303a30312c303030202d2d3e2030303a30303a30322c3030300a4f6cc3a10a" ]]
 }
 
@@ -291,9 +292,9 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"${FILMS}/a.pt-BR.srt: converted from utf-16le to UTF-8."* ]]
+  [[ "${output}" == *"${FILMS}/a.en.srt: converted from utf-16le to UTF-8."* ]]
   local bytes
-  bytes="$(jm_test_bytes "${FILMS}/a.pt-BR.srt")"
+  bytes="$(jm_test_bytes "${FILMS}/a.en.srt")"
   [[ "${bytes}" == "310a4f6cc3a10a" ]]
 }
 
@@ -307,7 +308,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"jimaku: warning: could not tell the encoding of ${FILMS}/a.pt-BR.srt, so it stays as it is."* ]]
+  [[ "${output}" == *"jimaku: warning: could not tell the encoding of ${FILMS}/a.en.srt, so it stays as it is."* ]]
 }
 
 @test "a subtitle iconv cannot convert stays as it is with a warning" {
@@ -321,8 +322,8 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == *"jimaku: warning: could not convert ${FILMS}/a.pt-BR.srt to UTF-8, so it stays as it is."* ]]
-  [[ ! -e "${FILMS}/a.pt-BR.srt.jimaku" ]]
+  [[ "${output}" == *"jimaku: warning: could not convert ${FILMS}/a.en.srt to UTF-8, so it stays as it is."* ]]
+  [[ ! -e "${FILMS}/a.en.srt.jimaku" ]]
 }
 
 @test "a folder run also converts subtitles that were already there" {
@@ -370,7 +371,7 @@ download_calls() {
   cd "${WORK}" || return 1
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '%s\n' films)
+  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '%s\n' films '')
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -383,7 +384,7 @@ download_calls() {
   cd "${FILMS}" || return 1
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '\n')
+  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '\n\n')
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -453,9 +454,9 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   local bytes
-  bytes="$(jm_test_bytes "${FILMS}/a.pt-BR.srt")"
+  bytes="$(jm_test_bytes "${FILMS}/a.en.srt")"
   [[ "${bytes}" == "efbbbf310a" ]]
-  [[ ! -e "${FILMS}/a.pt-BR.srt.jimaku" ]]
+  [[ ! -e "${FILMS}/a.en.srt.jimaku" ]]
 }
 
 @test "a language with a region such as zh-Hant is accepted" {
@@ -468,4 +469,161 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == *"Plan:   zh-Hant subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "JIMAKU_LANGUAGE sets the language when --language is not given" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JIMAKU_LANGUAGE=pt-BR run jm_test_run "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Plan:   pt-BR subtitles, saved as UTF-8 next to each video"* ]]
+  [[ -f "${FILMS}/a.pt-BR.srt" ]]
+}
+
+@test "--language wins over JIMAKU_LANGUAGE" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JIMAKU_LANGUAGE=pt-BR run jm_test_run --language es "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  run download_calls
+  [[ "${output}" == "download -l es -e utf-8 -f -C n,fo,hi -- ${FILMS}/a.mkv" ]]
+}
+
+@test "a JIMAKU_LANGUAGE that is not a language code stops the run before anything is fetched" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JIMAKU_LANGUAGE=pt_BR run jm_test_run "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == "jimaku: JIMAKU_LANGUAGE is 'pt_BR', which is not a language code such as pt-BR or en. run 'jimaku help' for usage." ]]
+  [[ ! -e "${FAKE_LOG}" ]]
+}
+
+@test "an empty JIMAKU_LANGUAGE counts as not set" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JIMAKU_LANGUAGE="" run jm_test_run --dry-run "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Plan:   en subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "in a terminal without a language the common ones are listed and a number picks one" {
+  # Arrange
+  videos a.mkv
+  local menu
+  menu="Common subtitle languages:"$'\n'"   1) en     English"$'\n'"   2) es     Spanish"$'\n'"   3) pt-BR  Brazilian Portuguese"
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 3)
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == "${menu}"$'\n'*"  12) zh     Chinese"$'\n'"Language, a number or a code [en]: "* ]]
+  [[ "${output}" == *"Plan:   pt-BR subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "a language code typed at the prompt is used even when it is not listed" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' nl)
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Plan:   nl subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "Enter at the language prompt picks English" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '\n')
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"Plan:   en subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "a wrong answer at the language prompt is named and asked again" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 13 fr)
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"jimaku: '13' is not a number from the list or a language code such as pt-BR or en."$'\n'"Language, a number or a code [en]: "* ]]
+  [[ "${output}" == *"Plan:   fr subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "three wrong answers at the language prompt stop the run" {
+  # Arrange
+  videos a.mkv
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s\n' 0 pt_BR '?')
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"jimaku: '?' is not a number from the list or a language code such as pt-BR or en."$'\n'"jimaku: no language was chosen. run 'jimaku help' for usage." ]]
+  [[ ! -e "${FAKE_LOG}" ]]
+}
+
+@test "end of input at the language prompt stops the run" {
+  # Arrange
+  videos a.mkv
+  local empty=""
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ "${output}" == *"Language, a number or a code [en]: " ]]
+  [[ ! -e "${FAKE_LOG}" ]]
+}
+
+@test "in a terminal JIMAKU_LANGUAGE is used without asking" {
+  # Arrange
+  videos a.mkv
+  local empty=""
+
+  # Act
+  JIMAKU_LANGUAGE=ja JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s' "${empty}")
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" != *"Common subtitle languages"* ]]
+  [[ "${output}" == *"Plan:   ja subtitles, saved as UTF-8 next to each video"* ]]
+}
+
+@test "a folder with no videos never asks for a language" {
+  # Arrange
+  videos notes.txt
+  local empty=""
+
+  # Act
+  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == "No videos in ${FILMS}." ]]
 }

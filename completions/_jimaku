@@ -14,7 +14,7 @@ _jimaku() {
   fi
 
   _arguments \
-    '--language=[the subtitle language, an IETF code such as pt-BR]:code:(pt-BR pt en es fr de it ja)' \
+    '--language=[the subtitle language, an IETF code such as en]:code:(en es pt-BR fr de it pt ru ar ja ko zh)' \
     '(--no-force)--force[replace a subtitle that is already there]' \
     '(--force)--no-force[skip a video that already has a subtitle]' \
     '(--no-hearing-impaired)--hearing-impaired[put subtitles for the hearing impaired first]' \

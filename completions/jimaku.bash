@@ -6,7 +6,7 @@ _jimaku() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
   if [[ "${prev}" == "--language" ]]; then
-    COMPREPLY=($(compgen -W "pt-BR pt en es fr de it ja" -- "${cur}"))
+    COMPREPLY=($(compgen -W "en es pt-BR fr de it pt ru ar ja ko zh" -- "${cur}"))
     return
   fi
   if [[ "${cur}" == -* ]]; then

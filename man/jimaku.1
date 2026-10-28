@@ -45,12 +45,22 @@ Print the usage page.
 .TP
 .BI \-\-language " code"
 The subtitle language, an IETF code such as
-.BR pt\-BR ,
-.B en
+.BR en ,
+.B pt\-BR
 or
 .BR es .
-Default
-.BR pt\-BR .
+Without it, jimaku uses
+.BR JIMAKU_LANGUAGE ;
+without that, a run in a terminal lists twelve common languages and asks for
+a number or any code, with Enter picking
+.BR en ,
+and a run outside a terminal uses
+.BR en .
+English is
+.BR en :
+the subtitle providers list English without a region, so
+.B en\-US
+matches nothing.
 .TP
 .BR \-\-force ", " \-\-no\-force
 Replace a subtitle that is already there, or skip a video that already has
@@ -71,6 +81,13 @@ and
 ends the options. A folder named help, doctor or version is reached by giving
 its path, such as
 .IR ./help .
+.SH ENVIRONMENT
+.TP
+.B JIMAKU_LANGUAGE
+The subtitle language when
+.B \-\-language
+is not given, such as
+.BR pt\-BR .
 .SH EXIT STATUS
 0 when every video got a subtitle, or there was no video. 1 when a video got
 no subtitle, subliminal failed, subliminal is missing, or the arguments are
@@ -78,10 +95,10 @@ wrong.
 .SH EXAMPLES
 .TP
 .B jimaku ~/Movies
-Fetch pt-BR subtitles for every video in the Movies folder.
+Fetch subtitles in the default language for every video in the Movies folder.
 .TP
-.B jimaku \-\-language en film.mkv
-Fetch an English subtitle for one video.
+.B jimaku \-\-language pt\-BR film.mkv
+Fetch a Brazilian Portuguese subtitle for one video.
 .TP
 .B jimaku \-\-dry\-run .
 List the videos in the current folder.

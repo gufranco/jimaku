@@ -6,6 +6,7 @@ source "${BATS_TEST_DIRNAME:-.}/helpers.bash"
 setup() {
   WORK="$(mktemp -d "${BATS_TMPDIR:-/tmp}/jm-cli.XXXXXX")"
   WORK="$(cd "${WORK}" && pwd -P)"
+  unset JIMAKU_LANGUAGE JM_LANGUAGE
   jm_test_fake_subliminal
 }
 

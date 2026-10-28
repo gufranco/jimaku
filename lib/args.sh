@@ -8,23 +8,16 @@ jm_args_bad_language() {
   return 1
 }
 
-jm_args_region() {
-  case "${1#*-}" in
-  *[!A-Za-z0-9-]*) jm_args_bad_language "$1" ;;
-  *) JM_LANGUAGE="$1" ;;
-  esac
-}
-
 jm_args_language() {
   case "$1" in
   '' | -*)
     jm_cli_hint "option '--language' needs a value"
     return 1
     ;;
-  [A-Za-z][A-Za-z] | [A-Za-z][A-Za-z][A-Za-z]) JM_LANGUAGE="$1" ;;
-  [A-Za-z][A-Za-z]-?* | [A-Za-z][A-Za-z][A-Za-z]-?*) jm_args_region "$1" ;;
-  *) jm_args_bad_language "$1" ;;
+  *) ;;
   esac
+  jm_language_valid "$1" || jm_args_bad_language "$1" || return 1
+  JM_LANGUAGE="$1"
 }
 
 jm_args_target() {

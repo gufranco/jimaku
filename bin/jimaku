@@ -14,6 +14,8 @@ JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
 . "${JM_LIB}/cli.sh"
 # shellcheck source=SCRIPTDIR/../lib/doctor.sh
 . "${JM_LIB}/doctor.sh"
+# shellcheck source=SCRIPTDIR/../lib/language.sh
+. "${JM_LIB}/language.sh"
 # shellcheck source=SCRIPTDIR/../lib/args.sh
 . "${JM_LIB}/args.sh"
 # shellcheck source=SCRIPTDIR/../lib/videos.sh

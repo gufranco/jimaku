@@ -19,20 +19,20 @@
 
 </div>
 
-一个命令，65 个测试，9 个 shell 模块，除 POSIX 系统和 [subliminal](https://github.com/Diaoul/subliminal) 外无需安装任何东西。`jimaku` 是日语"字幕"。它的姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分别负责写入磁盘、擦除磁盘、整理文件夹和制作 Video CD。
+一个命令，77 个测试，10 个 shell 模块，除 POSIX 系统和 [subliminal](https://github.com/Diaoul/subliminal) 外无需安装任何东西。`jimaku` 是日语"字幕"。它的姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分别负责写入磁盘、擦除磁盘、整理文件夹和制作 Video CD。
 
 ---
 
 ```console
-$ jimaku ~/Movies
+$ jimaku --language pt-BR ~/Movies
 
 Videos: 3 in /Users/me/Movies
 Plan:   pt-BR subtitles, saved as UTF-8 next to each video
         any subtitle already there is replaced
 
-/Users/me/Movies/Metropolis (1927).mkv: saved a pt-BR subtitle.
+/Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
 /Users/me/Movies/Metropolis (1927).en.srt: converted from iso-8859-1 to UTF-8.
-/Users/me/Movies/Nosferatu (1922).mp4: saved a pt-BR subtitle.
+/Users/me/Movies/Nosferatu (1922).mp4: saved a subtitle in pt-BR.
 jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General (1926).avi.
 Saved pt-BR subtitles for 2 of 3 videos.
 ```
@@ -80,20 +80,24 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | 命令 | 作用 |
 |:-----|:-----|
 | `jimaku [options] [video\|folder...]` | 为每个给定的视频，以及每个给定文件夹中的所有视频获取字幕；未给定时使用当前文件夹 |
-| 不带参数的 `jimaku` | 在终端中询问文件夹或视频，默认为当前文件夹 |
+| 不带参数的 `jimaku` | 在终端中询问文件夹或视频，默认为当前文件夹；未设定语言时也会询问语言 |
 | `jimaku doctor` | 列出 subliminal 和文本工具，以及每个工具的类型和版本 |
 | `jimaku version`、`jimaku help` | 打印版本或完整的用法说明 |
 
 | 选项 | 效果 |
 |:-----|:-----|
-| `--language CODE` | 字幕语言，使用 IETF 代码，例如 `pt-BR`、`en` 或 `es`。默认 `pt-BR` |
+| `--language CODE` | 字幕语言，使用 IETF 代码，例如 `en`、`pt-BR` 或 `es`。默认为 `JIMAKU_LANGUAGE`，未设置时在终端中询问，否则为 `en` |
 | `--force`、`--no-force` | 替换已有的字幕，或跳过已有字幕的视频。默认替换 |
 | `--hearing-impaired`、`--no-hearing-impaired` | 把听障字幕排在前面或后面。默认排在后面 |
 | `--dry-run` | 只列出视频，不下载任何东西 |
 
+| 环境变量 | 效果 |
+|:---------|:-----|
+| `JIMAKU_LANGUAGE` | 未指定 `--language` 时的字幕语言，例如 `pt-BR`。在 shell 配置文件中设置即成为默认值 |
+
 ```bash
 jimaku ~/Movies                                    # Movies 中的所有视频
-jimaku --language en "Metropolis (1927).mkv"       # 一个视频，英语字幕
+jimaku --language pt-BR "Metropolis (1927).mkv"    # 一个视频，巴西葡萄牙语字幕
 jimaku --dry-run .                                 # 查看会处理哪些视频
 ```
 
@@ -112,6 +116,7 @@ jimaku --dry-run .                                 # 查看会处理哪些视频
 
 - 字幕先写入临时文件再移到原位，所以中途中断也不会留下半个文件。无法转换的字幕会保持原样并给出警告。
 - jimaku 支持 Ubuntu 打包的 subliminal 2.2，也支持当前版本。如果 subliminal 有字幕类别，`--hearing-impaired` 会把听障字幕排在前面，默认则排在后面；使用旧版 subliminal 时，默认交由 subliminal 决定。
+- 既没有 `--language` 也没有 `JIMAKU_LANGUAGE` 时，在终端中会列出十二种常用语言，接受编号或任意代码，按 Enter 即选 `en`；在终端之外则使用 `en`。英语是 `en`，不是 `en-US`：字幕提供方列出的英语不带地区，所以 `en-US` 找不到任何字幕。
 
 <a id="portability"></a>
 

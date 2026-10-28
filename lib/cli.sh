@@ -19,13 +19,18 @@ usage:
 
 options:
   --language CODE              the subtitle language, an IETF code such as
-                               pt-BR, en or es (default pt-BR)
+                               en, pt-BR or es (default JIMAKU_LANGUAGE,
+                               else asked on a terminal, else en)
   --force | --no-force         replace a subtitle that is already there, or
                                skip a video that has one (default yes)
   --hearing-impaired | --no-hearing-impaired
                                put subtitles for the hearing impaired first,
                                or last (default no)
   --dry-run                    list every video and download nothing
+
+environment:
+  JIMAKU_LANGUAGE              the subtitle language when --language is not
+                               given, such as pt-BR
 
 notes:
   subliminal searches the subtitle providers and saves each subtitle next to
@@ -34,8 +39,12 @@ notes:
   Windows-1252 or UTF-16, so old players and TVs show accents right. A video
   with no subtitle found is named and makes the run fail. Hidden files and
   subfolders are left alone. Outside a terminal and without a target, jimaku
-  works on the current folder. -- ends the options, and a folder named help,
-  doctor or version is reached by giving its path, such as ./help.
+  works on the current folder. Without --language or JIMAKU_LANGUAGE, jimaku
+  lists common languages on a terminal and asks for a number or a code, and
+  uses en outside one. English is en: a region such as en-US matches no
+  subtitle, since the providers list English without one. -- ends the
+  options, and a folder named help, doctor or version is reached by giving
+  its path, such as ./help.
 
 examples:
   jimaku ~/Movies

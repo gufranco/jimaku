@@ -39,7 +39,7 @@ jm_summary() {
 jm_report() {
   jm_re_count="$(jm_plural "${JM_FOUND}" video)"
   if [ "${JM_DRY_RUN}" = yes ]; then
-    printf 'Dry run: %s would get a %s subtitle. Nothing was downloaded.\n' "${jm_re_count}" "${JM_LANGUAGE}"
+    printf 'Dry run: %s would get a subtitle in %s. Nothing was downloaded.\n' "${jm_re_count}" "${JM_LANGUAGE}"
     return 0
   fi
   [ "${JM_SAVED}" -eq "${JM_FOUND}" ] || jm_re_count="${JM_SAVED} of ${jm_re_count}"
@@ -72,6 +72,7 @@ jm_start() {
     jm_nothing
     return 0
   fi
+  jm_language_settle || return 1
   if [ "${JM_DRY_RUN}" = yes ]; then
     jm_summary
     jm_args_walk jm_show_target "$@"

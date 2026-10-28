@@ -51,7 +51,7 @@ jm_fetch() {
     JM_MISSED=$((JM_MISSED + 1))
     return 0
   fi
-  printf '%s: saved a %s subtitle.\n' "${jm_fe_video}" "${JM_LANGUAGE}"
+  printf '%s: saved a subtitle in %s.\n' "${jm_fe_video}" "${JM_LANGUAGE}"
   JM_SAVED=$((JM_SAVED + 1))
   jm_fetch_stem "${jm_fe_video}"
 }

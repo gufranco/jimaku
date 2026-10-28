@@ -5,7 +5,8 @@ export LC_ALL
 
 : "${JM_LIB:=}"
 : "${JM_PROG:=jimaku}"
-: "${JM_LANGUAGE:=pt-BR}"
+: "${JM_LANGUAGE:=}"
+: "${JM_DEFAULT_LANGUAGE:=en}"
 : "${JM_HEARING:=no}"
 : "${JM_FORCE:=yes}"
 : "${JM_DRY_RUN:=no}"

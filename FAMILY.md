@@ -157,6 +157,6 @@ Every member runs on the five toolsets in common use, and CI runs the whole suit
 
 ## The state of this repository
 
-jimaku has one job, so a bare `jimaku` on a terminal asks for the folder or video directly, offering the current folder. Downloading subtitles changes nothing but the subtitle files beside the videos, so it shows its summary block and starts without a typed confirmation. `--language` takes a value; the other options are switches with `--no-` forms where a default exists.
+jimaku has one job, so a bare `jimaku` on a terminal asks for the folder or video directly, offering the current folder. With neither `--language` nor `JIMAKU_LANGUAGE`, it then lists twelve common languages and asks for a number or a code, offering `en`; outside a terminal it uses `en`. `--language` wins over `JIMAKU_LANGUAGE`. Downloading subtitles changes nothing but the subtitle files beside the videos, so it shows its summary block and starts without a typed confirmation. `--language` takes a value; the other options are switches with `--no-` forms where a default exists.
 
 Gaps against the family standard (as of 2026-10-28): none.

@@ -19,20 +19,20 @@
 
 </div>
 
-コマンドは1つ、テストは65件、シェルのモジュールは9個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
+コマンドは1つ、テストは77件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
 
 ---
 
 ```console
-$ jimaku ~/Movies
+$ jimaku --language pt-BR ~/Movies
 
 Videos: 3 in /Users/me/Movies
 Plan:   pt-BR subtitles, saved as UTF-8 next to each video
         any subtitle already there is replaced
 
-/Users/me/Movies/Metropolis (1927).mkv: saved a pt-BR subtitle.
+/Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
 /Users/me/Movies/Metropolis (1927).en.srt: converted from iso-8859-1 to UTF-8.
-/Users/me/Movies/Nosferatu (1922).mp4: saved a pt-BR subtitle.
+/Users/me/Movies/Nosferatu (1922).mp4: saved a subtitle in pt-BR.
 jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General (1926).avi.
 Saved pt-BR subtitles for 2 of 3 videos.
 ```
@@ -80,20 +80,24 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | コマンド | 目的 |
 |:---------|:-----|
 | `jimaku [options] [video\|folder...]` | 指定した動画と、指定したフォルダーにあるすべての動画の字幕を取得します。指定がなければ現在のフォルダーです |
-| 引数なしの `jimaku` | ターミナルでは、現在のフォルダーを候補にしてフォルダーか動画を尋ねます |
+| 引数なしの `jimaku` | ターミナルでは、現在のフォルダーを候補にしてフォルダーか動画を尋ね、言語が決まっていなければ言語も尋ねます |
 | `jimaku doctor` | subliminal とテキスト処理ツールを、それぞれの種類とバージョン付きで表示します |
 | `jimaku version`、`jimaku help` | バージョンか使い方の全文を表示します |
 
 | オプション | 効果 |
 |:-----------|:-----|
-| `--language CODE` | 字幕の言語。`pt-BR`、`en`、`es` のような IETF コードです。既定は `pt-BR` |
+| `--language CODE` | 字幕の言語。`en`、`pt-BR`、`es` のような IETF コードです。既定は `JIMAKU_LANGUAGE`、なければターミナルで尋ね、それ以外は `en` |
 | `--force`、`--no-force` | すでにある字幕を置き換えるか、字幕のある動画を飛ばします。既定は置き換え |
 | `--hearing-impaired`、`--no-hearing-impaired` | 聴覚障害者向けの字幕を先にするか、後にします。既定は後 |
 | `--dry-run` | 動画を一覧するだけで、何もダウンロードしません |
 
+| 環境変数 | 効果 |
+|:---------|:-----|
+| `JIMAKU_LANGUAGE` | `--language` を指定しないときの字幕の言語。例は `pt-BR`。シェルのプロファイルで設定すると既定になります |
+
 ```bash
 jimaku ~/Movies                                    # Movies のすべての動画
-jimaku --language en "Metropolis (1927).mkv"       # 1本を英語で
+jimaku --language pt-BR "Metropolis (1927).mkv"    # 1本をブラジルポルトガル語で
 jimaku --dry-run .                                 # 対象になる動画を確認
 ```
 
@@ -112,6 +116,7 @@ jimaku --dry-run .                                 # 対象になる動画を確
 
 - 字幕は一時ファイルを経てから置き換えるので、途中で止まっても半端なファイルは残りません。変換できない字幕は警告を出して元のまま残します。
 - jimaku は Ubuntu が配布する subliminal 2.2 でも、現在の版でも動きます。subliminal に字幕カテゴリがある場合、`--hearing-impaired` は聴覚障害者向けの字幕を先にし、既定では後にします。古い subliminal では、既定のときは選択を subliminal に任せます。
+- `--language` も `JIMAKU_LANGUAGE` もない場合、ターミナルではよく使われる12の言語を一覧し、番号か任意のコードを受け付けます。Enter は `en` です。ターミナルの外では `en` を使います。英語は `en` で、`en-US` ではありません。字幕の提供元は英語を地域なしで扱うので、`en-US` では何も見つかりません。
 
 <a id="portability"></a>
 
