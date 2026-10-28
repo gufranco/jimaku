@@ -20,7 +20,7 @@ lint:
 	mandoc -T lint man/jimaku.1
 
 test:
-	JM_SHELLS=sh sh test/run-matrix.sh
+	JIMAKU_TEST_SHELLS=sh sh test/run-matrix.sh
 
 test-all:
 	sh test/run-matrix.sh

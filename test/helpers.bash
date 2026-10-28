@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-JM_TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_DIR="$(cd "${JM_TESTS_DIR}/.." && pwd)"
-export JM_TESTS_DIR REPO_DIR
+JIMAKU_TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "${JIMAKU_TESTS_DIR}/.." && pwd)"
+export JIMAKU_TESTS_DIR REPO_DIR
 
 jm_test_path() {
   if [[ -n "${SHIMS:-}" && -d "${SHIMS}" ]]; then
@@ -28,7 +28,7 @@ jm_test_run() {
   local search_path
   local -a shell_words
   search_path="$(jm_test_path)"
-  read -r -a shell_words <<<"${JM_SHELL:-sh}"
+  read -r -a shell_words <<<"${JIMAKU_TEST_SHELL:-sh}"
   PATH="${search_path}" "${shell_words[@]}" "${REPO_DIR}/bin/jimaku" "$@"
 }
 
@@ -36,7 +36,7 @@ jm_test_run_path() {
   local search_path="$1"
   local -a shell_words
   shift
-  read -r -a shell_words <<<"${JM_SHELL:-sh}"
+  read -r -a shell_words <<<"${JIMAKU_TEST_SHELL:-sh}"
   PATH="${search_path}" "${shell_words[@]}" "${REPO_DIR}/bin/jimaku" "$@"
 }
 
@@ -44,8 +44,8 @@ jm_test_call() {
   local search_path
   local -a shell_words
   search_path="$(jm_test_path)"
-  read -r -a shell_words <<<"${JM_SHELL:-sh}"
-  PATH="${search_path}" "${shell_words[@]}" "${JM_TESTS_DIR}/call.sh" "$@"
+  read -r -a shell_words <<<"${JIMAKU_TEST_SHELL:-sh}"
+  PATH="${search_path}" "${shell_words[@]}" "${JIMAKU_TESTS_DIR}/call.sh" "$@"
 }
 
 jm_test_farm() {
@@ -87,7 +87,7 @@ jm_test_tree() {
 jm_test_fake_subliminal() {
   SHIMS="${SHIMS:-${WORK:?}/shims}"
   mkdir -p "${SHIMS}"
-  cp -f "${JM_TESTS_DIR}/fake-subliminal.sh" "${SHIMS}/subliminal"
+  cp -f "${JIMAKU_TESTS_DIR}/fake-subliminal.sh" "${SHIMS}/subliminal"
   chmod +x "${SHIMS}/subliminal"
   export SHIMS
 }

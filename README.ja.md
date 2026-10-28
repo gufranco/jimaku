@@ -19,7 +19,7 @@
 
 </div>
 
-コマンドは1つ、テストは77件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
+コマンドは1つ、テストは86件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
 
 ---
 
@@ -31,9 +31,11 @@ Plan:   pt-BR subtitles, saved as UTF-8 next to each video
         any subtitle already there is replaced
 
 /Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
-/Users/me/Movies/Metropolis (1927).en.srt: converted from iso-8859-1 to UTF-8.
+/Users/me/Movies/Metropolis (1927).pt-BR.srt: converted from iso-8859-1 to
+UTF-8.
 /Users/me/Movies/Nosferatu (1922).mp4: saved a subtitle in pt-BR.
-jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General (1926).avi.
+jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General
+(1926).avi.
 Saved pt-BR subtitles for 2 of 3 videos.
 ```
 
@@ -133,7 +135,7 @@ jimaku --dry-run .                                 # 対象になる動画を確
 | コマンド | 説明 |
 |:---------|:-----|
 | `make lint` | すべてのスクリプト、テスト、補完に ShellCheck を、man ページに mandoc をかけます |
-| `make test` | システムの `sh` で65件の `bats` テスト |
+| `make test` | システムの `sh` で86件の `bats` テスト |
 | `make test-all` | 同じテストをすべてのシェルで。macOS では bash と zsh の両方の版を含みます |
 | `make coverage` | bashcov の行カバレッジ。CI と同じ100%の基準です |
 

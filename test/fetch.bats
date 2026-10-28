@@ -6,10 +6,10 @@ source "${BATS_TEST_DIRNAME:-.}/helpers.bash"
 setup() {
   WORK="$(mktemp -d "${BATS_TMPDIR:-/tmp}/jm-fetch.XXXXXX")"
   WORK="$(cd "${WORK}" && pwd -P)"
-  unset JIMAKU_LANGUAGE JM_LANGUAGE
+  unset JIMAKU_LANGUAGE
   FILMS="${WORK}/films"
   mkdir -p "${FILMS}"
-  export FAKE_LOG="${WORK}/calls.log"
+  export JIMAKU_FAKE_LOG="${WORK}/calls.log"
   jm_test_fake_subliminal
 }
 
@@ -27,11 +27,11 @@ videos() {
 subtitle_source() {
   # shellcheck disable=SC2059
   printf "$1" >"${WORK}/source.srt"
-  export FAKE_SOURCE="${WORK}/source.srt"
+  export JIMAKU_FAKE_SOURCE="${WORK}/source.srt"
 }
 
 download_calls() {
-  grep '^download -l' "${FAKE_LOG}"
+  grep '^download -l' "${JIMAKU_FAKE_LOG}"
 }
 
 @test "a single video gets an English subtitle by default, saved as UTF-8 next to it" {
@@ -79,7 +79,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  FAKE_CATEGORIES=no run jm_test_run --language=es --force --hearing-impaired "${FILMS}"
+  JIMAKU_FAKE_CATEGORIES=no run jm_test_run --language=es --force --hearing-impaired "${FILMS}"
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -92,7 +92,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  FAKE_CATEGORIES=no run jm_test_run --no-hearing-impaired "${FILMS}"
+  JIMAKU_FAKE_CATEGORIES=no run jm_test_run --no-hearing-impaired "${FILMS}"
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -154,7 +154,7 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == *"        dry run: list each video and download nothing"$'\n\n'"${FILMS}/a.mkv"$'\n'"${FILMS}/b.mkv"$'\n'"Dry run: 2 videos would get a subtitle in en. Nothing was downloaded." ]]
-  [[ ! -e "${FAKE_LOG}" ]]
+  [[ ! -e "${JIMAKU_FAKE_LOG}" ]]
 }
 
 @test "a dry run works without subliminal installed" {
@@ -214,7 +214,7 @@ download_calls() {
   videos a.mkv rare.mkv
 
   # Act
-  FAKE_NONE=rare run jm_test_run "${FILMS}"
+  JIMAKU_FAKE_NONE=rare run jm_test_run "${FILMS}"
 
   # Assert
   [[ "${status}" -eq 1 ]]
@@ -226,7 +226,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  FAKE_FAIL=a.mkv run jm_test_run "${FILMS}/a.mkv"
+  JIMAKU_FAKE_FAIL=a.mkv run jm_test_run "${FILMS}/a.mkv"
 
   # Assert
   [[ "${status}" -eq 1 ]]
@@ -345,7 +345,7 @@ download_calls() {
   printf 'Ol\341\n' >"${FILMS}/Show [1080p] S01E010.en.srt"
 
   # Act
-  FAKE_NONE=S01E010 run jm_test_run "${FILMS}/Show [1080p] S01E01.mkv"
+  JIMAKU_FAKE_NONE=S01E010 run jm_test_run "${FILMS}/Show [1080p] S01E01.mkv"
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -371,7 +371,7 @@ download_calls() {
   cd "${WORK}" || return 1
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '%s\n' films '')
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '%s\n' films '')
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -384,7 +384,7 @@ download_calls() {
   cd "${FILMS}" || return 1
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '\n\n')
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run < <(printf '\n\n')
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -422,7 +422,7 @@ download_calls() {
   local empty=""
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run < <(printf '%s' "${empty}")
+  JIMAKU_INTERACTIVE=1 run jm_test_run < <(printf '%s' "${empty}")
 
   # Assert
   [[ "${status}" -eq 1 ]]
@@ -507,7 +507,7 @@ download_calls() {
   # Assert
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == "jimaku: JIMAKU_LANGUAGE is 'pt_BR', which is not a language code such as pt-BR or en. run 'jimaku help' for usage." ]]
-  [[ ! -e "${FAKE_LOG}" ]]
+  [[ ! -e "${JIMAKU_FAKE_LOG}" ]]
 }
 
 @test "an empty JIMAKU_LANGUAGE counts as not set" {
@@ -529,7 +529,7 @@ download_calls() {
   menu="Common subtitle languages:"$'\n'"   1) en     English"$'\n'"   2) es     Spanish"$'\n'"   3) pt-BR  Brazilian Portuguese"
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 3)
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 3)
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -542,7 +542,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' nl)
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' nl)
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -554,7 +554,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '\n')
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '\n')
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -566,7 +566,7 @@ download_calls() {
   videos a.mkv
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 13 fr)
+  JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s\n' 13 fr)
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -579,12 +579,12 @@ download_calls() {
   videos a.mkv
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s\n' 0 pt_BR '?')
+  JIMAKU_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s\n' 0 pt_BR '?')
 
   # Assert
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"jimaku: '?' is not a number from the list or a language code such as pt-BR or en."$'\n'"jimaku: no language was chosen. run 'jimaku help' for usage." ]]
-  [[ ! -e "${FAKE_LOG}" ]]
+  [[ ! -e "${JIMAKU_FAKE_LOG}" ]]
 }
 
 @test "end of input at the language prompt stops the run" {
@@ -593,12 +593,12 @@ download_calls() {
   local empty=""
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
+  JIMAKU_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
 
   # Assert
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == *"Language, a number or a code [en]: " ]]
-  [[ ! -e "${FAKE_LOG}" ]]
+  [[ ! -e "${JIMAKU_FAKE_LOG}" ]]
 }
 
 @test "in a terminal JIMAKU_LANGUAGE is used without asking" {
@@ -607,7 +607,7 @@ download_calls() {
   local empty=""
 
   # Act
-  JIMAKU_LANGUAGE=ja JM_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s' "${empty}")
+  JIMAKU_LANGUAGE=ja JIMAKU_INTERACTIVE=1 run jm_test_run --dry-run "${FILMS}" < <(printf '%s' "${empty}")
 
   # Assert
   [[ "${status}" -eq 0 ]]
@@ -621,7 +621,7 @@ download_calls() {
   local empty=""
 
   # Act
-  JM_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
+  JIMAKU_INTERACTIVE=1 run jm_test_run "${FILMS}" < <(printf '%s' "${empty}")
 
   # Assert
   [[ "${status}" -eq 0 ]]

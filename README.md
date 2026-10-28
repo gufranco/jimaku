@@ -19,7 +19,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 
 </div>
 
-One command, 77 tests, 10 shell modules, and nothing to install beyond a POSIX system and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
+One command, 86 tests, 10 shell modules, and nothing to install beyond a POSIX system and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
 
 ---
 
@@ -31,9 +31,11 @@ Plan:   pt-BR subtitles, saved as UTF-8 next to each video
         any subtitle already there is replaced
 
 /Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
-/Users/me/Movies/Metropolis (1927).en.srt: converted from iso-8859-1 to UTF-8.
+/Users/me/Movies/Metropolis (1927).pt-BR.srt: converted from iso-8859-1 to
+UTF-8.
 /Users/me/Movies/Nosferatu (1922).mp4: saved a subtitle in pt-BR.
-jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General (1926).avi.
+jimaku: warning: no pt-BR subtitle found for /Users/me/Movies/The General
+(1926).avi.
 Saved pt-BR subtitles for 2 of 3 videos.
 ```
 
@@ -131,7 +133,7 @@ Every run works on the five toolsets in common use: Linux with GNU or uutils cor
 | Command | Description |
 |:--------|:------------|
 | `make lint` | ShellCheck on every script, test and completion, and mandoc on the man page |
-| `make test` | The 65 `bats` tests under the system `sh` |
+| `make test` | The 86 `bats` tests under the system `sh` |
 | `make test-all` | The same tests under every shell, both builds of bash and zsh included on macOS |
 | `make coverage` | bashcov line coverage, with the 100% gate CI enforces |
 

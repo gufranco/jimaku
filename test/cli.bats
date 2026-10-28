@@ -6,7 +6,7 @@ source "${BATS_TEST_DIRNAME:-.}/helpers.bash"
 setup() {
   WORK="$(mktemp -d "${BATS_TMPDIR:-/tmp}/jm-cli.XXXXXX")"
   WORK="$(cd "${WORK}" && pwd -P)"
-  unset JIMAKU_LANGUAGE JM_LANGUAGE
+  unset JIMAKU_LANGUAGE
   jm_test_fake_subliminal
 }
 
@@ -125,7 +125,7 @@ teardown() {
 @test "the tool runs by its bare name from inside its own folder" {
   # Arrange
   local -a shell_words
-  read -r -a shell_words <<<"${JM_SHELL:-sh}"
+  read -r -a shell_words <<<"${JIMAKU_TEST_SHELL:-sh}"
   cd "${REPO_DIR}/bin" || return 1
 
   # Act
@@ -236,7 +236,7 @@ teardown() {
   # Arrange
   mkdir -p "${WORK}/films"
   : >"${WORK}/films/a.mkv"
-  export FAKE_LOG="${WORK}/calls.log"
+  export JIMAKU_FAKE_LOG="${WORK}/calls.log"
 
   # Act
   run jm_test_run "${WORK}/films" "${WORK}/gone"
@@ -244,7 +244,7 @@ teardown() {
   # Assert
   [[ "${status}" -eq 1 ]]
   [[ "${output}" == "jimaku: no such video or folder: ${WORK}/gone" ]]
-  [[ ! -e "${FAKE_LOG}" ]]
+  [[ ! -e "${JIMAKU_FAKE_LOG}" ]]
 }
 
 @test "-- ends the options so a video may start with a dash" {

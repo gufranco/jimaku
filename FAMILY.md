@@ -52,7 +52,8 @@ No colour, no emoji, no bracketed level tags.
 
 - Every setting is a long option. `--name value` and `--name=value` both work, and `--` ends the options.
 - A yes or no setting that is asked about interactively has both forms, such as `--verify` and `--no-verify`.
-- kakikomi and kiyome also read their original environment variables, such as `PASSES=3`, as the same settings. An option on the command line wins over the environment.
+- A setting may also come from an environment variable named after the tool, `<TOOL>_<SETTING>` in capitals, such as `KIYOME_PASSES=3` or `JIMAKU_LANGUAGE=pt-BR`. An option on the command line wins over the environment.
+- No member reads a bare name such as `PASSES`, and none takes its internal variables from the environment: a member either assigns each one outright, or its entry point clears every inherited variable with its internal prefix, such as `JM_`, before anything runs. Test-only switches follow the same rule, such as `JIMAKU_TERMINAL` and `JIMAKU_TEST_SHELLS`. `scripts/check-names.sh` fails lint on any other name.
 - Anything required and not given is asked for when stdin is a terminal: `Label [default]: ` on stderr, up to three tries for a required value.
 - Without a terminal the tool never waits on a prompt. It stops with the usage hint below.
 - A destructive step asks the person to type the device name: `Type disk4 to erase, or anything else to stop: `.
@@ -74,6 +75,7 @@ No colour, no emoji, no bracketed level tags.
 
 - A long step shows one progress line: `<Verb> NNN%  <rate>  XmYYs left`. On a terminal it redraws in place; otherwise it prints once per 10 percent.
 - The last line states the result in a full sentence, such as `Ejected. /dev/disk4 is safe to remove.`
+- Every line printed to a terminal fits in 80 columns, the default width of Terminal, iTerm2, xterm and GNOME Terminal. A longer message wraps between words, and a summary line continues under its value. A single word wider than 80 columns, such as a long path, is printed whole on its own line. Sent to a pipe or a file, a message stays on one line, so a script can read it. Tests check that `help`, `version` and `doctor` stay within 80 columns.
 
 ## Diagnostics
 
@@ -106,7 +108,14 @@ A row for a core tool, such as `awk`, `sed`, `dd`, `od`, `cmp`, `tr` or `date`, 
 ```text
 awk                ok       /usr/bin/awk, bsd 20200816
 dd                 ok       /usr/bin/dd, uutils 0.10.0
-sed                ok       /opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10
+sed                ok       /usr/local/bin/sed, gnu 4.10
+```
+
+On a terminal, a row that would pass 80 columns prints the dependency and its state, then the path and note on the next line, indented two spaces:
+
+```text
+sha256sum          ok
+  /opt/homebrew/opt/uutils-coreutils/libexec/uubin/sha256sum, uutils 0.12.0
 ```
 
 The flavor is `gnu`, `uutils`, `bsd`, `mawk`, `busybox` or `unknown`. It comes from the tool's own `--version` answer, then from where it is installed, then from the system it runs on.

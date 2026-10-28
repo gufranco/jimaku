@@ -1,6 +1,10 @@
 #!/bin/sh
 [ -n "${ZSH_VERSION:-}" ] && emulate sh
 
+for jm_inherited in $(env | sed -n 's/^\(JM_[A-Za-z0-9_]*\)=.*/\1/p'); do
+  unset "${jm_inherited}"
+done
+
 jm_self="$0"
 case "${jm_self}" in
   */*) ;;

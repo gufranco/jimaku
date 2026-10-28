@@ -54,7 +54,7 @@ USAGE
 }
 
 jm_cli_hint() {
-  printf "%s: %s. run '%s help' for usage.\n" "${JM_PROG}" "$1" "${JM_PROG}" >&2
+  jm_say 0 "${JM_PROG}: $1. run '${JM_PROG} help' for usage." >&2
 }
 
 jm_cli_version() {
@@ -64,7 +64,7 @@ jm_cli_version() {
 }
 
 jm_interactive() {
-  [ "${JM_INTERACTIVE:-}" = 1 ] && return 0
+  [ "${JIMAKU_INTERACTIVE:-}" = 1 ] && return 0
   [ -t 0 ]
 }
 

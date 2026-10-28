@@ -125,7 +125,7 @@ jobs:
         run: sh bin/jimaku doctor
       - name: Run the suites under ${{ matrix.shell }}
         env:
-          JM_SHELLS: ${{ matrix.shell }}
+          JIMAKU_TEST_SHELLS: ${{ matrix.shell }}
         run: sh test/run-matrix.sh
 
   coverage:

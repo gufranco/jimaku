@@ -23,7 +23,7 @@ fake_tool() {
 flavor_of() {
   local tool
   tool="$(fake_tool "${WORK}/bin/$1" "$2")"
-  JM_OS="${3:-Darwin}" jm_test_call jm_tool_flavor "${tool}"
+  JIMAKU_OS="${3:-Darwin}" jm_test_call jm_tool_flavor "${tool}"
 }
 
 @test "GNU coreutils reads as gnu with its version" {
@@ -131,13 +131,13 @@ flavor_of() {
   tool="$(fake_tool "${WORK}/uutils-coreutils/uubin/mv" "unrecognized option '--version'")"
 
   # Act
-  JM_OS=Darwin run jm_test_call jm_tool_flavor "${tool}"
+  JIMAKU_OS=Darwin run jm_test_call jm_tool_flavor "${tool}"
 
   # Assert
   [[ "${output}" == "uutils" ]]
 }
 
-@test "the host system decides when JM_OS is not set" {
+@test "the host system decides when JIMAKU_OS is not set" {
   # Arrange
   local tool expected=unknown
   tool="$(fake_tool "${WORK}/bin/mv" "usage: mv source target")"

@@ -4,7 +4,13 @@
 . "${JM_LIB:?}/state.sh"
 
 jm_doctor_row() {
-  printf '%-18s %-8s %s\n' "$1" "$2" "$3"
+  jm_dw_line="$(printf '%-18s %-8s %s' "$1" "$2" "$3")"
+  if [ "${#jm_dw_line}" -le "${JM_WIDTH}" ] || ! jm_terminal; then
+    printf '%s\n' "${jm_dw_line}"
+    return 0
+  fi
+  printf '%-18s %s\n' "$1" "$2"
+  printf '  %s\n' "$3" | jm_wrap 2
 }
 
 jm_flavor_version() {
@@ -22,7 +28,7 @@ jm_tool_flavor() {
   jm_tf_raw="$("$1" --version 2>&1 </dev/null)" || true
   jm_tf_text="$(printf '%s\n' "${jm_tf_raw}" | sed -n '1p')"
   jm_tf_version="$(jm_flavor_version "${jm_tf_text}")"
-  jm_tf_os="${JM_OS:-}"
+  jm_tf_os="${JIMAKU_OS:-}"
   [ -n "${jm_tf_os}" ] || jm_tf_os="$(uname -s)"
   case "${jm_tf_text}" in
   *uutils*) jm_tf_name=uutils ;;
