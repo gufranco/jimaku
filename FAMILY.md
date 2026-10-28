@@ -153,6 +153,7 @@ Every member runs on the five toolsets in common use, and CI runs the whole suit
 - No comments in source, apart from tool directives and the `Arrange`, `Act`, `Assert` markers in tests.
 - Make targets: `help`, `lint`, `test`, `coverage`, `check`, `install`.
 - Conventional commits pushed to `main`; semantic-release cuts the version.
+- A newer push cancels the CI still running for an older commit, but never a release in progress. Each test job carries `concurrency: ci-${{ github.ref }}-${{ github.job }}-${{ strategy.job-index }}` with `cancel-in-progress: true`, and the `release` and `formula` jobs each have their own group with `cancel-in-progress: false`. A workflow-level concurrency block is not used, since cancelling the whole run would stop a release halfway.
 ---
 
 *Everything above this line is identical in every member. A member may add sections below it about its own state, and nothing may be added above it that the others do not also get.*
