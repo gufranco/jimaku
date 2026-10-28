@@ -1,0 +1,37 @@
+#!/bin/sh
+[ -n "${ZSH_VERSION:-}" ] && emulate sh
+
+jm_self="$0"
+case "${jm_self}" in
+  */*) ;;
+  *) jm_self="$(command -v -- "${jm_self}")" ;;
+esac
+JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
+
+# shellcheck source=SCRIPTDIR/../lib/core.sh
+. "${JM_LIB}/core.sh"
+# shellcheck source=SCRIPTDIR/../lib/cli.sh
+. "${JM_LIB}/cli.sh"
+# shellcheck source=SCRIPTDIR/../lib/doctor.sh
+. "${JM_LIB}/doctor.sh"
+# shellcheck source=SCRIPTDIR/../lib/args.sh
+. "${JM_LIB}/args.sh"
+# shellcheck source=SCRIPTDIR/../lib/videos.sh
+. "${JM_LIB}/videos.sh"
+# shellcheck source=SCRIPTDIR/../lib/utf8.sh
+. "${JM_LIB}/utf8.sh"
+# shellcheck source=SCRIPTDIR/../lib/fetch.sh
+. "${JM_LIB}/fetch.sh"
+# shellcheck source=SCRIPTDIR/../lib/run.sh
+. "${JM_LIB}/run.sh"
+
+jm_main() {
+  case "${1:-}" in
+    help | -h | --help) jm_usage ;;
+    version | -V | --version) jm_cli_version ;;
+    doctor) jm_doctor ;;
+    *) jm_start "$@" ;;
+  esac
+}
+
+jm_main "$@"

@@ -1,0 +1,91 @@
+.TH JIMAKU 1 "2026-10-28" "jimaku" "User Commands"
+.SH NAME
+jimaku \- download subtitles for videos and save them as UTF-8
+.SH SYNOPSIS
+.B jimaku
+.br
+.B jimaku
+.RI [ options ] " " [ video | folder ...]
+.br
+.B jimaku doctor
+.br
+.B jimaku version
+.br
+.B jimaku help
+.SH DESCRIPTION
+.B jimaku
+asks
+.BR subliminal (1)
+for a subtitle for each video it is given, and for every video at the top of
+each folder it is given, then makes sure the subtitles beside those videos are
+UTF-8 without a byte order mark. A subtitle in Latin-1, Windows-1252 or UTF-16
+is converted, so players and TVs that only read UTF-8 show accents right.
+.PP
+Videos are recognized by extension: mkv, mp4, m4v, avi, mov, wmv, webm, mpg,
+mpeg, ts, m2ts, flv, ogm, divx and 3gp, in any case. Hidden files and
+subfolders are left alone. A file named on the command line is used whatever
+its extension.
+.PP
+Before downloading anything, jimaku prints how many videos it found and what
+it will do. Without a target on a terminal it asks for one, offering the
+current folder; outside a terminal it works on the current folder. A video for
+which no subtitle is found is named in a warning.
+.SH COMMANDS
+.TP
+.B doctor
+List subliminal with its version and the text tools jimaku needs, with the
+flavor and version of each. Exits non-zero when one is missing.
+.TP
+.B version
+Print the version and the platform.
+.TP
+.B help
+Print the usage page.
+.SH OPTIONS
+.TP
+.BI \-\-language " code"
+The subtitle language, an IETF code such as
+.BR pt\-BR ,
+.B en
+or
+.BR es .
+Default
+.BR pt\-BR .
+.TP
+.BR \-\-force ", " \-\-no\-force
+Replace a subtitle that is already there, or skip a video that already has
+one. Default yes.
+.TP
+.BR \-\-hearing\-impaired ", " \-\-no\-hearing\-impaired
+Put subtitles for the hearing impaired first, or last. Default no. With a
+subliminal older than its subtitle categories, the default leaves the choice
+to subliminal.
+.TP
+.B \-\-dry\-run
+List every video and download nothing.
+.PP
+Every option that takes a value also takes the form
+.IR \-\-name = value ,
+and
+.B \-\-
+ends the options. A folder named help, doctor or version is reached by giving
+its path, such as
+.IR ./help .
+.SH EXIT STATUS
+0 when every video got a subtitle, or there was no video. 1 when a video got
+no subtitle, subliminal failed, subliminal is missing, or the arguments are
+wrong.
+.SH EXAMPLES
+.TP
+.B jimaku ~/Movies
+Fetch pt-BR subtitles for every video in the Movies folder.
+.TP
+.B jimaku \-\-language en film.mkv
+Fetch an English subtitle for one video.
+.TP
+.B jimaku \-\-dry\-run .
+List the videos in the current folder.
+.SH SEE ALSO
+.BR subliminal (1),
+.BR iconv (1),
+.BR file (1)

@@ -1,0 +1,26 @@
+#compdef jimaku
+
+_jimaku() {
+  local -a commands
+  commands=(
+    'doctor:check the tools jimaku needs'
+    'version:print the version'
+    'help:print usage'
+  )
+
+  if (( CURRENT == 2 )) && [[ "${words[2]}" != -* ]]; then
+    _alternative 'commands:command:_describe command commands' 'targets:video or folder:_files'
+    return
+  fi
+
+  _arguments \
+    '--language=[the subtitle language, an IETF code such as pt-BR]:code:(pt-BR pt en es fr de it ja)' \
+    '(--no-force)--force[replace a subtitle that is already there]' \
+    '(--force)--no-force[skip a video that already has a subtitle]' \
+    '(--no-hearing-impaired)--hearing-impaired[put subtitles for the hearing impaired first]' \
+    '(--hearing-impaired)--no-hearing-impaired[put subtitles for the hearing impaired last]' \
+    '--dry-run[list every video and download nothing]' \
+    '*:video or folder:_files'
+}
+
+_jimaku "$@"
