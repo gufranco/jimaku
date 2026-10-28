@@ -6,10 +6,13 @@
 jm_language_valid() {
   case "$1" in
   [A-Za-z][A-Za-z] | [A-Za-z][A-Za-z][A-Za-z]) return 0 ;;
-  [A-Za-z][A-Za-z]-?* | [A-Za-z][A-Za-z][A-Za-z]-?*) ;;
+  [A-Za-z][A-Za-z]-?* | [A-Za-z][A-Za-z][A-Za-z]-?*) jm_language_region "${1#*-}" ;;
   *) return 1 ;;
   esac
-  case "${1#*-}" in
+}
+
+jm_language_region() {
+  case "$1" in
   *[!A-Za-z0-9-]*) return 1 ;;
   *) return 0 ;;
   esac
