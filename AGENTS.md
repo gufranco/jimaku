@@ -12,13 +12,13 @@ Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to 
 | [`lib/`](lib) | The modules. [`lib/state.sh`](lib/state.sh) declares every global, including the defaults for language, force and the hearing-impaired preference |
 | [`man/jimaku.1`](man/jimaku.1) | The man page |
 | [`completions/`](completions) | bash, zsh and fish completions |
-| [`test/`](test) | The `bats` suite, its helpers, the fake `subliminal` it runs against and the shell matrix runner |
-| [`scripts/`](scripts) | Coverage, the coverage gate, the name check, the toolset helper and the release version stamp |
+| [`test/`](test) | The `bats` suite, its helpers, the fake `subliminal` it runs against, the golden transcripts, the shell matrix runner and the Linux container script |
+| [`scripts/`](scripts) | Coverage, the coverage gate, the Linux coverage run, the name check, the toolset helper and the release version stamp |
 
 ## Names
 
 - Globals carry `JM_`; function-scoped variables carry a per-function `jm_` prefix, such as `jm_fe_`.
-- Settings come from `JIMAKU_<NAME>`, such as `JIMAKU_LANGUAGE`; test switches are `JIMAKU_TERMINAL` and `JIMAKU_TEST_SHELLS`.
+- Settings come from `JIMAKU_<NAME>`, such as `JIMAKU_LANGUAGE`; test switches are `JIMAKU_TERMINAL`, `JIMAKU_TEST_SHELLS`, `JIMAKU_TEST_RECORD` and `JIMAKU_TEST_IMAGE`.
 - Output goes through `jm_say`, `jm_error` and `jm_warning`.
 
 ## Behaviour
@@ -27,6 +27,7 @@ Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to 
 - With neither `--language` nor `JIMAKU_LANGUAGE`, it lists twelve common languages and asks for a number or a code, offering `en`; outside a terminal it uses `en`. `--language` wins over `JIMAKU_LANGUAGE`.
 - Downloading subtitles changes nothing but the subtitle files beside the videos, so it shows its summary block and starts without a typed confirmation.
 - `--language` takes a value; the other options are switches with `--no-` forms where a default exists.
+- `--json` reports the language, the counts of videos found, saved, missed and failed, and each video with its result: `saved`, `missed`, `failed`, or `planned` in a dry run.
 
 ## Domain rules
 
@@ -41,8 +42,4 @@ Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to 
 
 ## Gaps against FAMILY.md
 
-As of 2026-10-29, closed in the change that removes each line:
-
-- No `make test-linux`, `test/linux-container.sh` or merged local coverage.
-- No golden transcripts.
-- No `--json` for the list of subtitles a run saved.
+None (as of 2026-10-29).

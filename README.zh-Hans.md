@@ -91,6 +91,7 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | `--force`、`--no-force` | 替换已有的字幕，或跳过已有字幕的视频。默认替换 |
 | `--hearing-impaired`、`--no-hearing-impaired` | 把听障字幕排在前面或后面。默认排在后面 |
 | `--dry-run` | 只列出视频，不下载任何东西 |
+| `--json` | 以一个 JSON 对象输出结果，供脚本使用 |
 
 | 环境变量 | 效果 |
 |:---------|:-----|
@@ -133,12 +134,14 @@ jimaku --dry-run .                                 # 查看会处理哪些视频
 
 | 命令 | 说明 |
 |:-----|:-----|
-| `make lint` | 对所有脚本、测试和补全运行 ShellCheck，对 man 手册运行 mandoc |
-| `make test` | 在系统 `sh` 下运行 84 个 `bats` 测试 |
-| `make test-all` | 在所有 shell 下运行同样的测试，macOS 上包括 bash 和 zsh 的两个版本 |
-| `make coverage` | bashcov 行覆盖率，门槛与 CI 相同，为 100% |
+| `make fmt` | 用 shfmt 格式化所有脚本 |
+| `make lint` | 运行 shfmt，对所有脚本、测试和补全运行 ShellCheck，用 mandoc 检查 man 手册 |
+| `make test` | 在系统 `sh` 下运行 `bats` 测试 |
+| `make test-all` | 在每种 shell 下运行同样的测试，macOS 上包括 bash 和 zsh 的两个版本 |
+| `make test-linux` | 在 Ubuntu 容器中运行同样的测试 |
+| `make coverage` | 合并这台 Mac 与 Ubuntu 容器中的 bashcov 行覆盖率，以及 CI 强制的 100% 门槛 |
 
-真正的 subliminal 需要网络，所以测试针对放在 `PATH` 上的假 `subliminal` 运行；`file`、`iconv` 和 `sed` 是真实工具，故障通过放在 `PATH` 上的小包装脚本注入。每次推送到 `main` 都会运行 semantic-release：`feat` 或 `fix` 提交会发布新版本，更新 [`lib/core.sh`](lib/core.sh) 中的 `JIMAKU_VERSION` 和 CHANGELOG，并更新 Homebrew formula。
+真正的 subliminal 需要网络，所以测试针对放在 `PATH` 上的假 `subliminal` 运行；`file`、`iconv` 和 `sed` 是真实工具，故障通过放在 `PATH` 上的小包装脚本注入。推送到 `main` 且 CI 通过后会运行 semantic-release：`feat` 或 `fix` 提交会发布新版本，更新 [`lib/core.sh`](lib/core.sh) 中的 `JIMAKU_VERSION` 和 CHANGELOG，并更新 Homebrew formula。
 
 ## 许可证
 

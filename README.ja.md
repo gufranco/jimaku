@@ -91,6 +91,7 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | `--force`、`--no-force` | すでにある字幕を置き換えるか、字幕のある動画を飛ばします。既定は置き換え |
 | `--hearing-impaired`、`--no-hearing-impaired` | 聴覚障害者向けの字幕を先にするか、後にします。既定は後 |
 | `--dry-run` | 動画を一覧するだけで、何もダウンロードしません |
+| `--json` | 結果を1つのJSONオブジェクトとして出力します（スクリプト向け） |
 
 | 環境変数 | 効果 |
 |:---------|:-----|
@@ -133,12 +134,14 @@ jimaku --dry-run .                                 # 対象になる動画を確
 
 | コマンド | 説明 |
 |:---------|:-----|
-| `make lint` | すべてのスクリプト、テスト、補完に ShellCheck を、man ページに mandoc をかけます |
-| `make test` | システムの `sh` で84件の `bats` テスト |
-| `make test-all` | 同じテストをすべてのシェルで。macOS では bash と zsh の両方の版を含みます |
-| `make coverage` | bashcov の行カバレッジ。CI と同じ100%の基準です |
+| `make fmt` | すべてのスクリプトを shfmt で整形 |
+| `make lint` | shfmt、すべてのスクリプト、テスト、補完に ShellCheck、man ページに mandoc |
+| `make test` | システムの `sh` で `bats` テスト |
+| `make test-all` | すべてのシェルで同じテスト。macOS では bash と zsh の両方の版を含みます |
+| `make test-linux` | Ubuntu コンテナで同じテスト |
+| `make coverage` | この Mac と Ubuntu コンテナでの bashcov の行カバレッジを合算し、CI が強制する 100% のゲート |
 
-本物の subliminal はネットワークを使うので、テストは `PATH` に置いた偽の `subliminal` に対して動きます。`file`、`iconv`、`sed` は本物で、失敗は `PATH` に置いた小さなラッパーで起こします。`main` への push のたびに semantic-release が動き、`feat` か `fix` のコミットでリリースを出し、[`lib/core.sh`](lib/core.sh) の `JIMAKU_VERSION` と CHANGELOG を更新し、Homebrew の formula を上げます。
+本物の subliminal はネットワークを使うので、テストは `PATH` に置いた偽の `subliminal` に対して動きます。`file`、`iconv`、`sed` は本物で、失敗は `PATH` に置いた小さなラッパーで起こします。`main` への push で CI が通ると semantic-release が動き、`feat` か `fix` のコミットでリリースを出し、[`lib/core.sh`](lib/core.sh) の `JIMAKU_VERSION` と CHANGELOG を更新し、Homebrew の formula を上げます。
 
 ## ライセンス
 
