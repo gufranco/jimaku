@@ -7,8 +7,8 @@ done
 
 jm_self="$0"
 case "${jm_self}" in
-  */*) ;;
-  *) jm_self="$(command -v -- "${jm_self}")" ;;
+*/*) ;;
+*) jm_self="$(command -v -- "${jm_self}")" ;;
 esac
 JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
 
@@ -33,10 +33,10 @@ JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
 
 jm_main() {
   case "${1:-}" in
-    help | -h | --help) jm_usage ;;
-    version | -V | --version) jm_cli_version ;;
-    doctor) jm_doctor ;;
-    *) jm_start "$@" ;;
+  help | -h | --help) jm_usage ;;
+  version | -V | --version) jm_cli_version ;;
+  doctor) jm_doctor ;;
+  *) jm_start "$@" ;;
   esac
 }
 
