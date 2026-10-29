@@ -184,8 +184,9 @@ jobs:
       - name: Run the suites under bashcov
         if: matrix.coverage
         run: |
+          ruby_dir="$(dirname "$(command -v ruby)")"
           dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
-          PATH="${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
+          PATH="${ruby_dir}:${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
       - uses: actions/upload-artifact@v7.0.2
         if: matrix.coverage
         with:
@@ -245,8 +246,9 @@ jobs:
       - name: Run the suites under bashcov
         if: matrix.coverage
         run: |
+          ruby_dir="$(dirname "$(command -v ruby)")"
           dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
-          PATH="${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
+          PATH="${ruby_dir}:${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
       - uses: actions/upload-artifact@v7.0.2
         if: matrix.coverage
         with:
