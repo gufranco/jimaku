@@ -1,55 +1,48 @@
 # jimaku
 
-Guidance for anyone, human or agent, changing this repository. What jimaku is and how to use it lives in [README.md](README.md); this file covers how the code is built, tested and shipped.
+Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to use it lives in [README.md](README.md).
 
-## Family
-
-jimaku is one of the tools that share a single command-line contract: [FAMILY.md](FAMILY.md), which lists every member. Help page, options, prompts, output, diagnostics and `doctor` follow it. A change to the contract goes into `FAMILY.md` in every member's repository at once.
+[FAMILY.md](FAMILY.md) holds everything jimaku shares with the rest of the kodougu family, and it is the same in every member. This file holds only what is exclusive to jimaku, under the same headings as the agent guide of every member. Read both before changing anything; a rule that would serve the other members goes into `FAMILY.md` instead of here.
 
 ## Layout
 
 | Path | Holds |
 |:-----|:------|
-| [`bin/jimaku`](bin/jimaku) | The entry point: it sources the modules and dispatches the command |
-| [`lib/`](lib) | The modules it sources. [`lib/state.sh`](lib/state.sh) declares every global, including the defaults for language, force and the hearing-impaired preference |
+| [`bin/jimaku`](bin/jimaku) | The entry point: it clears inherited `JM_` variables, sources the modules and dispatches the command |
+| [`lib/`](lib) | The modules. [`lib/state.sh`](lib/state.sh) declares every global, including the defaults for language, force and the hearing-impaired preference |
 | [`man/jimaku.1`](man/jimaku.1) | The man page |
 | [`completions/`](completions) | bash, zsh and fish completions |
 | [`test/`](test) | The `bats` suite, its helpers, the fake `subliminal` it runs against and the shell matrix runner |
 | [`scripts/`](scripts) | Coverage, the coverage gate, the name check, the toolset helper and the release version stamp |
 
-## Commands
+## Names
 
-| Command | Does |
-|:--------|:-----|
-| `make lint` | ShellCheck `-o all` on scripts, tests and the bash completion, mandoc on the man page, and the duplicate-function check |
-| `make test` | Every `bats` test under the system `sh` |
-| `make test-all` | The same tests under `sh`, `dash`, `bash`, `bash --posix` and `zsh`; on macOS, under both the system's bash and zsh and Homebrew's |
-| `make coverage` | bashcov line coverage, gated at 100% |
-| `make install` | Installs the tool, man page and completions under `~/.local` |
+- Globals carry `JM_`; function-scoped variables carry a per-function `jm_` prefix, such as `jm_fe_`.
+- Settings come from `JIMAKU_<NAME>`, such as `JIMAKU_LANGUAGE`; test switches are `JIMAKU_TERMINAL` and `JIMAKU_TEST_SHELLS`.
+- Output goes through `jm_say`, `jm_error` and `jm_warning`.
 
-## Hard rules
+## Behaviour
 
-- 100% shell script, with zero ShellCheck errors and zero warnings, and it works under `sh`, `bash` and `zsh` on both Linux and macOS (owner's rule, 2026-10-25). On macOS, every tool the system ships that Homebrew also builds in a newer version, bash and zsh included, is tested in both builds (owner's rule, 2026-10-27). CI proves every combination on each push; a finding or a failure in any one of them blocks the change.
-- It runs on all five toolsets in [FAMILY.md](FAMILY.md): Linux with GNU coreutils, Linux with uutils coreutils, macOS with the tools it ships, macOS with Homebrew's newer builds of them, and macOS with Homebrew's uutils tools. Never use an option one of them lacks; where they differ, handle each one in code and cover it with a test. A change that passes on one toolset only is not done.
-- CI runs the suite on every toolset through [`scripts/toolset.sh`](scripts/toolset.sh). To reproduce a report, put the reporter's toolset first: `export PATH="$(sh scripts/toolset.sh gnu | paste -sd: -):$PATH"`.
-- `doctor` names the flavor and version of every core tool it lists, such as `gnu 9.7`, `uutils 0.12.0` or `bsd`. A new core dependency gets a `doctor` row with its flavor in the same change.
-- [CLAUDE.md](CLAUDE.md) holds only `@AGENTS.md`. Rules for this repository live here, never there.
-- POSIX `sh` only. Every function-scoped variable carries the function's `jm_` prefix, because `sh` has no `local`.
-- Every environment variable jimaku reads is named `JIMAKU_<NAME>`, test switches included (owner's rule, 2026-10-28). Globals carry `JM_`, and [`bin/jimaku`](bin/jimaku) clears every inherited `JM_` variable before it sources the modules, so the environment never sets one. [`scripts/check-names.sh`](scripts/check-names.sh) fails lint on any other name.
-- Every line jimaku prints fits in 80 columns (owner's rule, 2026-10-28). Text with a path or another value of any length goes through `jm_say`, `jm_error` or `jm_warning`, which wrap between words when stdout is a terminal and keep a message on one line in a pipe; `JIMAKU_TERMINAL=1` makes a test behave as a terminal. [`test/width.bats`](test/width.bats) checks help and version. `doctor` is exempt and keeps one row per tool at any width.
-- No comments in source. Tool directives and the `Arrange`, `Act`, `Assert` markers in tests are the only exceptions.
-- jimaku works with subliminal 2.2, the version Ubuntu packages, and with the current one Homebrew ships. It reads `subliminal download --help` once per run and uses `--subtitle-categories` only when it is there; every flag it passes exists in both.
-- A subtitle is rewritten only through a temporary file beside it, then `mv -f`, so an interrupted conversion never leaves half a file. A file that cannot be converted stays exactly as it was, with a warning.
-- Videos and subtitles are found with shell globs, never by parsing `ls` or `find` output, so any name moves through intact, brackets and spaces included.
-- Tests run against a fake `subliminal` placed on `PATH`, since the real one needs the network; `file`, `iconv` and `sed` are the real tools, and faults in them come only from small wrappers placed on `PATH`.
-- A new option goes into the help page, the man page and all three completions in the same commit; a test fails otherwise.
-- Conventional commits, pushed straight to `main`. No pull requests.
+- jimaku has one job, so a bare `jimaku` on a terminal asks for the folder or video directly, offering the current folder.
+- With neither `--language` nor `JIMAKU_LANGUAGE`, it lists twelve common languages and asks for a number or a code, offering `en`; outside a terminal it uses `en`. `--language` wins over `JIMAKU_LANGUAGE`.
+- Downloading subtitles changes nothing but the subtitle files beside the videos, so it shows its summary block and starts without a typed confirmation.
+- `--language` takes a value; the other options are switches with `--no-` forms where a default exists.
 
-## Release and Homebrew
+## Domain rules
 
-- Once CI passes on a push to `main`, [`.github/workflows/release.yml`](.github/workflows/release.yml) runs semantic-release. A `feat` or `fix` commit publishes a release, stamps `JIMAKU_VERSION` in [`lib/core.sh`](lib/core.sh) and updates the CHANGELOG.
-- The Homebrew formula is not in this repository. It lives in [gufranco/homebrew-tap](https://github.com/gufranco/homebrew-tap) as `Formula/jimaku.rb`, next to the formulas for the rest of the family and for other projects.
-- After a release, [`.github/workflows/formula.yml`](.github/workflows/formula.yml) sends a `formula-bump` dispatch to the tap with the new tag. The tap rewrites the formula's `url` and `sha256` itself, so neither is edited by hand.
-- The dispatch authenticates as a GitHub App through the `TAP_APP_ID` and `TAP_APP_PRIVATE_KEY` secrets of this repository.
-- The formula's `install` block decides which files reach users. A new file that must be installed, or a new dependency, needs a matching change to `Formula/jimaku.rb` in the tap.
-- On Linux, the dotfiles install jimaku from a clone with `make install`, with `subliminal` from apt.
+- jimaku works with subliminal 2.2, the version Ubuntu packages, and with the current one Homebrew ships. It reads `subliminal download --help` once per run and passes `--subtitle-categories` only when it is there.
+- A subtitle that cannot be converted to UTF-8 stays exactly as it was, with a warning.
+- Tests run against a fake `subliminal` on `PATH`, since the real one needs the network; `file`, `iconv` and `sed` are the real tools.
+
+## Release
+
+- `JIMAKU_VERSION` lives in [`lib/core.sh`](lib/core.sh).
+- The tap's `Formula/jimaku.rb` depends on `subliminal`; on Linux the dotfiles install `subliminal` from apt next to jimaku.
+
+## Gaps against FAMILY.md
+
+As of 2026-10-29, closed in the change that removes each line:
+
+- No `make test-linux`, `test/linux-container.sh` or merged local coverage.
+- No golden transcripts.
+- No `--json` for the list of subtitles a run saved.
