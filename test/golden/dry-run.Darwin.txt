@@ -1,0 +1,9 @@
+
+Videos: 2 in WORK/films
+Plan:   en subtitles, saved as UTF-8 next to each video
+        a video that already has one is skipped
+        dry run: list each video and download nothing
+
+WORK/films/a.mkv
+WORK/films/b.mkv
+Dry run: 2 videos would get a subtitle in en. Nothing was downloaded.

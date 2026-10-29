@@ -97,3 +97,17 @@ jm_test_bytes() {
   dump="$(od -An -tx1 -v "$1")" || return 1
   tr -d ' \n' <<<"${dump}"
 }
+
+jm_test_matches_golden() {
+  local name="$1"
+  local actual="$2"
+  local os golden normalized
+  os="$(uname -s)"
+  golden="${JIMAKU_TESTS_DIR}/golden/${name}.${os}.txt"
+  normalized="${actual//"${WORK}"/WORK}"
+  if [[ "${JIMAKU_TEST_RECORD:-}" == "1" ]]; then
+    mkdir -p "${JIMAKU_TESTS_DIR}/golden"
+    printf '%s\n' "${normalized}" >"${golden}"
+  fi
+  diff <(printf '%s\n' "${normalized}") "${golden}"
+}

@@ -1,0 +1,10 @@
+
+Videos: 3 in WORK/films
+Plan:   pt-BR subtitles, saved as UTF-8 next to each video
+        any subtitle already there is replaced
+
+WORK/films/a.mkv: saved a subtitle in pt-BR.
+WORK/films/b.mkv: saved a subtitle in pt-BR.
+jimaku: warning: no pt-BR subtitle found for WORK/films/gone.mkv.
+WORK/films/old.srt: converted from iso-8859-1 to UTF-8.
+Saved pt-BR subtitles for 2 of 3 videos.
