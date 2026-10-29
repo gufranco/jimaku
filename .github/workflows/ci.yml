@@ -161,25 +161,31 @@ jobs:
         if: matrix.coverage
         with:
           bundler-cache: true
-      - name: Put the ${{ matrix.toolset }} toolset first on PATH
+      - name: Build the ${{ matrix.toolset }} toolset
         env:
           TOOLSET: ${{ matrix.toolset }}
-        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" >> "${GITHUB_PATH}"
+        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
       - name: Show which shell runs the suites
         if: contains(matrix.shell, 'bash') || contains(matrix.shell, 'zsh')
         env:
           SHELL_UNDER_TEST: ${{ matrix.shell }}
         run: '"${SHELL_UNDER_TEST}" --version | head -n 1'
       - name: Show which tools the run uses
-        run: sh bin/jimaku doctor
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh bin/jimaku doctor
       - name: Run the suites under ${{ matrix.shell }}
         if: ${{ !matrix.coverage }}
         env:
           JIMAKU_TEST_SHELLS: ${{ matrix.shell }}
-        run: sh test/run-matrix.sh
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh test/run-matrix.sh
       - name: Run the suites under bashcov
         if: matrix.coverage
-        run: sh scripts/coverage.sh 0
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
       - uses: actions/upload-artifact@v7.0.2
         if: matrix.coverage
         with:
@@ -216,25 +222,31 @@ jobs:
         if: matrix.coverage
         with:
           bundler-cache: true
-      - name: Put the ${{ matrix.toolset }} toolset first on PATH
+      - name: Build the ${{ matrix.toolset }} toolset
         env:
           TOOLSET: ${{ matrix.toolset }}
-        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" >> "${GITHUB_PATH}"
+        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
       - name: Show which shell runs the suites
         if: contains(matrix.shell, 'bash') || contains(matrix.shell, 'zsh')
         env:
           SHELL_UNDER_TEST: ${{ matrix.shell }}
         run: '"${SHELL_UNDER_TEST}" --version | head -n 1'
       - name: Show which tools the run uses
-        run: sh bin/jimaku doctor
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh bin/jimaku doctor
       - name: Run the suites under ${{ matrix.shell }}
         if: ${{ !matrix.coverage }}
         env:
           JIMAKU_TEST_SHELLS: ${{ matrix.shell }}
-        run: sh test/run-matrix.sh
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh test/run-matrix.sh
       - name: Run the suites under bashcov
         if: matrix.coverage
-        run: sh scripts/coverage.sh 0
+        run: |
+          dirs="$(paste -s -d : "${RUNNER_TEMP}/toolset-path")"
+          PATH="${dirs:+${dirs}:}${PATH}" sh scripts/coverage.sh 0
       - uses: actions/upload-artifact@v7.0.2
         if: matrix.coverage
         with:
