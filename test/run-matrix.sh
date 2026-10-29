@@ -23,7 +23,7 @@ IFS='|'
 for shell in ${shells}; do
   IFS="${old_ifs}"
   printf '== %s ==\n' "${shell}"
-  if ! JIMAKU_TEST_SHELL="${shell}" bats --print-output-on-failure "$@"; then
+  if ! JIMAKU_TEST_SHELL="${shell}" bats --jobs "${JIMAKU_TEST_JOBS:-1}" --no-parallelize-within-files --print-output-on-failure "$@"; then
     failed=$((failed + 1))
   fi
   IFS='|'
