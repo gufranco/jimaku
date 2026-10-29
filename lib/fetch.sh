@@ -43,15 +43,18 @@ jm_fetch() {
     jm_error "subliminal failed for ${jm_fe_video}."
     jm_said subliminal "${jm_fe_said}"
     JM_FAILED=$((JM_FAILED + 1))
+    jm_json_video "${jm_fe_video}" failed
     return 0
   fi
   jm_fe_count="$(jm_fetch_count "${jm_fe_said}")"
   if [ "${jm_fe_count:-0}" -eq 0 ]; then
     jm_warning "no ${JM_LANGUAGE} subtitle found for ${jm_fe_video}."
     JM_MISSED=$((JM_MISSED + 1))
+    jm_json_video "${jm_fe_video}" missed
     return 0
   fi
-  jm_say 0 "${jm_fe_video}: saved a subtitle in ${JM_LANGUAGE}."
+  [ "${JM_JSON}" = yes ] || jm_say 0 "${jm_fe_video}: saved a subtitle in ${JM_LANGUAGE}."
   JM_SAVED=$((JM_SAVED + 1))
+  jm_json_video "${jm_fe_video}" saved
   jm_fetch_stem "${jm_fe_video}"
 }

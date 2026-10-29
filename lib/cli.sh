@@ -27,6 +27,7 @@ options:
                                put subtitles for the hearing impaired first,
                                or last (default no)
   --dry-run                    list every video and download nothing
+  --json                       print the result as one JSON object, for scripts
 
 environment:
   JIMAKU_LANGUAGE              the subtitle language when --language is not

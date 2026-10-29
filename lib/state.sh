@@ -11,6 +11,8 @@ export LC_ALL
 : "${JM_HEARING:=no}"
 : "${JM_FORCE:=yes}"
 : "${JM_DRY_RUN:=no}"
+: "${JM_JSON:=no}"
+: "${JM_JSON_VIDEOS:=}"
 : "${JM_CATEGORIES:=no}"
 : "${JM_ARGS_DONE:=no}"
 : "${JM_ARGS_PENDING:=no}"

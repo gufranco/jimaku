@@ -54,6 +54,29 @@ jm_error() {
   jm_say 0 "${JM_PROG}: $*" >&2
 }
 
+jm_json_string() {
+  printf '%s' "$1" | awk '
+    BEGIN { for (i = 1; i < 32; i++) code[sprintf("%c", i)] = sprintf("\\u%04x", i) }
+    function escape(s,   r, c, i) {
+      r = ""
+      for (i = 1; i <= length(s); i++) {
+        c = substr(s, i, 1)
+        if (c == "\\") r = r "\\\\"
+        else if (c == "\"") r = r "\\\""
+        else if (c in code) r = r code[c]
+        else r = r c
+      }
+      return r
+    }
+    { out = out (NR > 1 ? "\\n" : "") escape($0) }
+    END { printf "\"%s\"", out }'
+}
+
+jm_json_video() {
+  jm_jv_path="$(jm_json_string "$1")"
+  JM_JSON_VIDEOS="${JM_JSON_VIDEOS}${JM_JSON_VIDEOS:+,}{\"video\":${jm_jv_path},\"result\":\"$2\"}"
+}
+
 jm_plural() {
   if [ "$1" -eq 1 ]; then
     printf '1 %s\n' "$2"

@@ -36,6 +36,7 @@ jm_args_one() {
   case "$2" in
   --) JM_ARGS_DONE=yes ;;
   --dry-run) JM_DRY_RUN=yes ;;
+  --json) JM_JSON=yes ;;
   --force) JM_FORCE=yes ;;
   --no-force) JM_FORCE=no ;;
   --hearing-impaired) JM_HEARING=yes ;;

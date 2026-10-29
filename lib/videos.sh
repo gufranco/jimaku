@@ -35,14 +35,22 @@ jm_tally_target() {
   return 1
 }
 
+jm_show_video() {
+  if [ "${JM_JSON}" = yes ]; then
+    jm_json_video "$1" planned
+    return 0
+  fi
+  printf '%s\n' "$1"
+}
+
 jm_show_target() {
   jm_st_path="$(jm_expand "$1")"
   if [ -f "${jm_st_path}" ]; then
-    printf '%s\n' "${jm_st_path}"
+    jm_show_video "${jm_st_path}"
     return 0
   fi
   for jm_st_file in "${jm_st_path}"/*; do
-    jm_is_video "${jm_st_file}" && printf '%s\n' "${jm_st_file}"
+    jm_is_video "${jm_st_file}" && jm_show_video "${jm_st_file}"
   done
   return 0
 }

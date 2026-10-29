@@ -20,6 +20,7 @@ _jimaku() {
     '(--no-hearing-impaired)--hearing-impaired[put subtitles for the hearing impaired first]' \
     '(--hearing-impaired)--no-hearing-impaired[put subtitles for the hearing impaired last]' \
     '--dry-run[list every video and download nothing]' \
+    '--json[print the result as one JSON object, for scripts]' \
     '*:video or folder:_files'
 }
 

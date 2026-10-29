@@ -22,7 +22,7 @@ jm_utf8_from() {
   if iconv -f "$2" -t UTF-8 "$1" >"$1.jimaku" 2>/dev/null && [ -s "$1.jimaku" ]; then
     mv -f "$1.jimaku" "$1"
     jm_has_bom "$1" && jm_strip_bom "$1"
-    jm_say 0 "$1: converted from $2 to UTF-8."
+    [ "${JM_JSON}" = yes ] || jm_say 0 "$1: converted from $2 to UTF-8."
     return 0
   fi
   rm -f "$1.jimaku"

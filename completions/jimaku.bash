@@ -10,7 +10,7 @@ _jimaku() {
     return
   fi
   if [[ "${cur}" == -* ]]; then
-    COMPREPLY=($(compgen -W "--language --force --no-force --hearing-impaired --no-hearing-impaired --dry-run" -- "${cur}"))
+    COMPREPLY=($(compgen -W "--language --force --no-force --hearing-impaired --no-hearing-impaired --dry-run --json" -- "${cur}"))
     return
   fi
   words="$(compgen -f -- "${cur}" || true)"
