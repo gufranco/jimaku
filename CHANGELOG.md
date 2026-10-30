@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.2.0](https://github.com/gufranco/jimaku/compare/v1.1.1...v1.2.0) (2026-10-30)
+
+
+### Features
+
+* print the result as JSON with --json ([15e7f88](https://github.com/gufranco/jimaku/commit/15e7f88f031736c20c86dea2cd0407e694a820ac))
+
 ## [1.1.1](https://github.com/gufranco/jimaku/compare/v1.1.0...v1.1.1) (2026-10-28)
 
 
