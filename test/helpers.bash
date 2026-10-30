@@ -48,22 +48,31 @@ jm_test_call() {
   PATH="${search_path}" "${shell_words[@]}" "${JIMAKU_TESTS_DIR}/call.sh" "$@"
 }
 
+jm_test_farm_wanted() {
+  local farm="$1"
+  local tool="$2"
+  local name="${2##*/}"
+  local excluded
+  shift 2
+  [[ -x "${tool}" && ! -e "${farm}/${name}" ]] || return 1
+  for excluded in "$@"; do
+    [[ "${name}" == "${excluded}" ]] && return 1
+  done
+  return 0
+}
+
 jm_test_farm() {
   local farm="${WORK:?}/farm"
-  local dir tool name excluded
-  local -a dirs
+  local dir tool
+  local -a dirs batch
   mkdir -p "${farm}"
   IFS=: read -r -a dirs <<<"${PATH}"
   for dir in "${dirs[@]}"; do
-    [[ -d "${dir}" ]] || continue
+    batch=()
     for tool in "${dir}"/*; do
-      name="${tool##*/}"
-      [[ -x "${tool}" && ! -e "${farm}/${name}" ]] || continue
-      for excluded in "$@"; do
-        [[ "${name}" == "${excluded}" ]] && continue 2
-      done
-      ln -s "${tool}" "${farm}/${name}"
+      jm_test_farm_wanted "${farm}" "${tool}" "$@" && batch+=("${tool}")
     done
+    [[ ${#batch[@]} -eq 0 ]] || ln -s "${batch[@]}" "${farm}/"
   done
   printf '%s\n' "${farm}"
 }
