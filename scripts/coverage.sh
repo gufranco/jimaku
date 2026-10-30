@@ -28,7 +28,19 @@ wrapper="${wrapper_dir}/bashcov-shell"
 } >"${wrapper}"
 chmod 0755 "${wrapper}"
 
-JIMAKU_TEST_SHELL="${wrapper}" bats --jobs "${JIMAKU_TEST_JOBS:-1}" --no-parallelize-within-files "${root}/test"
+test_jobs="${JIMAKU_TEST_JOBS:-1}"
+case "${test_jobs}" in
+'' | *[!0-9]*)
+  printf 'JIMAKU_TEST_JOBS must be a whole number, got: %s\n' "${test_jobs}" >&2
+  exit 2
+  ;;
+*) ;;
+esac
+set --
+if [ "${test_jobs}" -gt 1 ]; then
+  set -- --jobs "${test_jobs}" --no-parallelize-within-files
+fi
+JIMAKU_TEST_SHELL="${wrapper}" bats "$@" "${root}/test"
 
 cd "${root}"
 python3 scripts/coverage-gate.py '/(bin/jimaku|lib/[a-z]+\.sh)\Z' "${minimum}" coverage/.resultset.json
