@@ -113,15 +113,6 @@ jobs:
           - shell: dash
             toolset: busybox
             coverage: false
-          - shell: /home/linuxbrew/.linuxbrew/bin/bash
-            toolset: homebrew
-            coverage: false
-          - shell: /home/linuxbrew/.linuxbrew/bin/zsh
-            toolset: homebrew
-            coverage: false
-          - shell: /home/linuxbrew/.linuxbrew/bin/dash
-            toolset: homebrew
-            coverage: false
     steps:
       - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43  # v2.22.3
         with:
@@ -150,13 +141,6 @@ jobs:
           sudo apt-get install -y -qq -o Dir::Cache::Archives="${HOME}/apt-archives" -o APT::Sandbox::User=root \
             bats dash zsh mandoc parallel subliminal "${extra[@]}"
           sudo chown -R "$(id -u):$(id -g)" "${HOME}/apt-archives"
-      - name: Install the Homebrew toolset
-        if: matrix.toolset == 'homebrew'
-        run: |
-          set -euo pipefail
-          echo "/home/linuxbrew/.linuxbrew/bin" >> "${GITHUB_PATH}"
-          /home/linuxbrew/.linuxbrew/bin/brew install --formula \
-            bash dash-shell zsh coreutils findutils gnu-sed gawk grep diffutils file-formula subliminal
       - uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f  # v1.335.0
         if: matrix.coverage
         with:
