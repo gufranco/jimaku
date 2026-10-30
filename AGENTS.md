@@ -13,7 +13,8 @@ Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to 
 | [`man/jimaku.1`](man/jimaku.1) | The man page |
 | [`completions/`](completions) | bash, zsh and fish completions |
 | [`test/`](test) | The `bats` suite, its helpers, the fake `subliminal` it runs against, the golden transcripts, the shell matrix runner and the Linux container script |
-| [`scripts/`](scripts) | Coverage, the coverage gate, the Linux coverage run, the name check, the toolset helper and the release version stamp |
+| [`scripts/`](scripts) | Coverage, the coverage gate, the Linux coverage run and the name check, which `make` runs |
+| [`.github/scripts/`](.github/scripts) | The toolset helper and the release version stamp, which only CI and the release run |
 
 ## Names
 

@@ -136,22 +136,22 @@ The flavor is `gnu`, `uutils`, `bsd`, `mawk`, `busybox` or `unknown`. It comes f
 
 ## Toolsets
 
-Every tool that can be installed in more than one version on a supported system is tested in every one of them. Every member runs on the seven toolsets below, and CI runs the whole suite on each:
+Every tool that can be installed in more than one version on a supported system is tested in every one of them. Every member runs on the six toolsets below, and CI runs the whole suite on each:
 
 | Toolset | What it is |
 |:--------|:-----------|
 | Linux, uutils | Ubuntu's default since 25.10: uutils coreutils, with GNU sed and mawk |
 | Linux, GNU | GNU coreutils and gawk |
 | Linux, BusyBox | BusyBox's applets first on `PATH`: coreutils, awk, sed, grep, find and the rest |
-| Linux, Homebrew | Homebrew on Linux, with its current build of every tool the member calls first on `PATH` |
 | macOS, native | Everything macOS ships, first on `PATH`: its BSD tools, bash 3.2, zsh, perl, openssl and the rest |
 | macOS, Homebrew | Homebrew's current build of every tool macOS also ships, first on `PATH`: coreutils, findutils, gnu-sed, gawk, grep, diffutils, bash, zsh, and each member's own, such as openssl@3, curl, perl, libarchive, gzip, bzip2, libiconv or file-formula |
 | macOS, uutils | Homebrew's uutils-coreutils, uutils-diffutils and uutils-findutils, first on `PATH` |
 
 - A member's own dependencies are tested in every build those routes offer, such as `ffmpeg` and `ffmpeg-full`, `subliminal` from apt and its current release, or `age` from apt and from Homebrew. A dependency that gains a new route or build gets its leg in the same change.
-- A script uses only options all seven accept. Where they differ, the code handles each one and a test covers it. A change that passes on one toolset only is not done.
+- Homebrew on Linux is not a supported route: no member documents it, and CI does not test it.
+- A script uses only options all six accept. Where they differ, the code handles each one and a test covers it. A change that passes on one toolset only is not done.
 - Any tool macOS ships that Homebrew also builds in a newer version is tested in both: the macOS native toolset runs the system's copy, and the macOS Homebrew toolset runs Homebrew's. A member that starts calling such a tool adds its formula to the Homebrew leg in CI.
-- `.github/scripts/toolset.sh native`, `homebrew`, `gnu`, `uutils` or `busybox` prints the directories that put a toolset first on `PATH`; on Linux, `homebrew` is Homebrew on Linux, and `busybox` links BusyBox's applets other than its shells. CI uses it, and a report is reproduced by putting the reporter's toolset first: `export PATH="$(sh .github/scripts/toolset.sh gnu | paste -sd: -):$PATH"`.
+- `.github/scripts/toolset.sh native`, `homebrew`, `gnu`, `uutils` or `busybox` prints the directories that put a toolset first on `PATH`; on Linux, `busybox` links BusyBox's applets other than its shells. CI uses it, and a report is reproduced by putting the reporter's toolset first: `export PATH="$(sh .github/scripts/toolset.sh gnu | paste -sd: -):$PATH"`.
 
 ## Safety
 
