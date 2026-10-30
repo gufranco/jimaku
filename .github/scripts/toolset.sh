@@ -2,7 +2,7 @@
 set -eu
 
 usage() {
-  printf 'usage: sh scripts/toolset.sh native|homebrew|gnu|uutils|busybox [farm-dir]\n' >&2
+  printf 'usage: sh .github/scripts/toolset.sh native|homebrew|gnu|uutils|busybox [farm-dir]\n' >&2
   exit 1
 }
 

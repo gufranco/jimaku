@@ -164,7 +164,7 @@ jobs:
       - name: Build the ${{ matrix.toolset }} toolset
         env:
           TOOLSET: ${{ matrix.toolset }}
-        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
+        run: sh .github/scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
       - name: Show which shell runs the suites
         if: contains(matrix.shell, 'bash') || contains(matrix.shell, 'zsh')
         env:
@@ -226,7 +226,7 @@ jobs:
       - name: Build the ${{ matrix.toolset }} toolset
         env:
           TOOLSET: ${{ matrix.toolset }}
-        run: sh scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
+        run: sh .github/scripts/toolset.sh "${TOOLSET}" "${RUNNER_TEMP}/toolset" > "${RUNNER_TEMP}/toolset-path"
       - name: Show which shell runs the suites
         if: contains(matrix.shell, 'bash') || contains(matrix.shell, 'zsh')
         env:
