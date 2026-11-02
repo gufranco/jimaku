@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/gufranco/jimaku/compare/v1.2.0...v1.2.1) (2026-11-02)
+
+
+### Bug Fixes
+
+* read BusyBox from any line of its answer ([ace734a](https://github.com/gufranco/jimaku/commit/ace734a565dfea16e9f0f6b7f0df377e32062553))
+
 # [1.2.0](https://github.com/gufranco/jimaku/compare/v1.1.1...v1.2.0) (2026-10-30)
 
 
