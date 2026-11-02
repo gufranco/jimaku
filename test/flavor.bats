@@ -92,6 +92,29 @@ flavor_of() {
   [[ "${output}" == "busybox 1.36.1" ]]
 }
 
+@test "BusyBox that names itself after its error line reads as busybox" {
+  # Arrange
+  local text
+  text="$(printf "awk: invalid option -- '-'\nBusyBox v1.37.0 (Ubuntu 1:1.37.0-7ubuntu1) multi-call binary.")"
+
+  # Act
+  run flavor_of awk "${text}" Linux
+
+  # Assert
+  [[ "${output}" == "busybox 1.37.0" ]]
+}
+
+@test "BusyBox sed, which says it is not GNU sed, reads as busybox" {
+  # Arrange
+  local text="This is not GNU sed version 4.0"
+
+  # Act
+  run flavor_of sed "${text}" Linux
+
+  # Assert
+  [[ "${output}" == "busybox" ]]
+}
+
 @test "a tool that refuses --version on macOS reads as bsd" {
   # Arrange
   local text="mv: illegal option -- -"

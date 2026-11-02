@@ -18,15 +18,27 @@ jm_flavor_version() {
   }'
 }
 
+jm_tool_line() {
+  jm_tl_line="$(printf '%s\n' "$1" | awk '/BusyBox|This is not GNU/ { print; exit }')"
+  if [ -z "${jm_tl_line}" ]; then
+    jm_tl_line="$(printf '%s\n' "$1" | sed -n '1p')"
+  fi
+  printf '%s\n' "${jm_tl_line}"
+}
+
 jm_tool_flavor() {
   jm_tf_raw="$("$1" --version 2>&1 </dev/null)" || true
-  jm_tf_text="$(printf '%s\n' "${jm_tf_raw}" | sed -n '1p')"
+  jm_tf_text="$(jm_tool_line "${jm_tf_raw}")"
   jm_tf_version="$(jm_flavor_version "${jm_tf_text}")"
   jm_tf_os="${JIMAKU_OS:-}"
   [ -n "${jm_tf_os}" ] || jm_tf_os="$(uname -s)"
   case "${jm_tf_text}" in
   *uutils*) jm_tf_name=uutils ;;
   *BusyBox*) jm_tf_name=busybox ;;
+  *"This is not GNU"*)
+    jm_tf_name=busybox
+    jm_tf_version=""
+    ;;
   *GNU* | *"(coreutils)"*) jm_tf_name=gnu ;;
   *mawk*) jm_tf_name=mawk ;;
   *"awk version"*) jm_tf_name=bsd ;;
