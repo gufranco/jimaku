@@ -1,5 +1,12 @@
 # Changelog
 
+# [1.3.0](https://github.com/gufranco/jimaku/compare/v1.2.1...v1.3.0) (2026-11-04)
+
+
+### Features
+
+* draw the terminal interface with gum ([47b064b](https://github.com/gufranco/jimaku/commit/47b064bb1b9fd450bbde35ef917f38eba713bd87))
+
 ## [1.2.1](https://github.com/gufranco/jimaku/compare/v1.2.0...v1.2.1) (2026-11-02)
 
 
