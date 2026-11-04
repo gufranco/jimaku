@@ -18,7 +18,7 @@
 
 </div>
 
-一條指令，163 個測試，11 個 shell 模組，除了 POSIX 系統、gum 和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
+一條指令，161 個測試，11 個 shell 模組，除了 POSIX 系統、gum 和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
 
 ---
 

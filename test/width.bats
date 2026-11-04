@@ -23,7 +23,7 @@ widest_line() {
   local page widest
 
   # Act
-  page="$(JIMAKU_TERMINAL=1 jm_test_run help)"
+  page="$(jm_test_run help)"
 
   # Assert
   widest="$(printf '%s\n' "${page}" | widest_line)"
@@ -35,28 +35,14 @@ widest_line() {
   local page widest
 
   # Act
-  page="$(JIMAKU_TERMINAL=1 jm_test_run version)"
+  page="$(jm_test_run version)"
 
   # Assert
   widest="$(printf '%s\n' "${page}" | widest_line)"
   [[ "${widest}" -le 80 ]]
 }
 
-@test "an error longer than 80 columns wraps between words" {
-  # Arrange
-  local message="the subtitle provider answered with a page that was not a subtitle, so nothing was saved for this video"
-
-  # Act
-  JIMAKU_TERMINAL=1 run jm_test_call jm_error "${message}"
-
-  # Assert
-  [[ "${status}" -eq 0 ]]
-  [[ "${#lines[@]}" -eq 2 ]]
-  [[ "${lines[0]}" == "jimaku: the subtitle provider answered with a page that was not a subtitle, so" ]]
-  [[ "${lines[1]}" == "nothing was saved for this video" ]]
-}
-
-@test "an error sent to a pipe stays on one line, however long" {
+@test "an error stays on one line, however long" {
   # Arrange
   local message="the subtitle provider answered with a page that was not a subtitle, so nothing was saved for this video"
 
@@ -68,25 +54,12 @@ widest_line() {
   [[ "${output}" == "jimaku: ${message}" ]]
 }
 
-@test "a word wider than 80 columns stays whole on its own line" {
-  # Arrange
-  local folder="/Volumes/Archive/Films/The-Complete-Collection-Of-Every-Restored-Print-1968-To-1985"
-
-  # Act
-  JIMAKU_TERMINAL=1 run jm_test_call jm_say 8 "Videos: 3 in ${folder}"
-
-  # Assert
-  [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" == "Videos: 3 in" ]]
-  [[ "${lines[1]}" == "        ${folder}" ]]
-}
-
-@test "a doctor row stays on one line on a terminal, however long" {
+@test "a doctor row stays on one line, however long" {
   # Arrange
   local expected="sed                ok       /opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10"
 
   # Act
-  JIMAKU_TERMINAL=1 run jm_test_call jm_doctor_row "sed" ok "/opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10"
+  run jm_test_call jm_doctor_row "sed" ok "/opt/homebrew/opt/gnu-sed/libexec/gnubin/sed, gnu 4.10"
 
   # Assert
   [[ "${status}" -eq 0 ]]

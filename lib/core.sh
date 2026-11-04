@@ -9,41 +9,8 @@ jm_version() {
   printf '%s %s\n' "${JM_PROG}" "${JIMAKU_VERSION}"
 }
 
-jm_wrap() {
-  awk -v width="${JM_WIDTH}" -v indent="$1" '
-    function pad(n,   s) {
-      s = ""
-      while (n-- > 0) { s = s " " }
-      return s
-    }
-    length($0) <= width { print; next }
-    {
-      match($0, /^ */)
-      n = split($0, word, " ")
-      out = substr($0, 1, RLENGTH) word[1]
-      for (i = 2; i <= n; i++) {
-        if (length(out) + 1 + length(word[i]) > width) {
-          print out
-          out = pad(indent) word[i]
-        } else {
-          out = out " " word[i]
-        }
-      }
-      print out
-    }'
-}
-
-jm_terminal() {
-  [ "${JIMAKU_TERMINAL:-}" = 1 ] || [ -t 1 ]
-}
-
 jm_say() {
-  jm_sy_text="$2"
-  if [ "${#jm_sy_text}" -le "${JM_WIDTH}" ] || ! jm_terminal; then
-    printf '%s\n' "${jm_sy_text}"
-    return 0
-  fi
-  printf '%s\n' "${jm_sy_text}" | jm_wrap "$1"
+  printf '%s\n' "$1"
 }
 
 jm_warning() {
@@ -51,7 +18,7 @@ jm_warning() {
     jm_ui_log WARN "$*"
     return 0
   fi
-  jm_say 0 "${JM_PROG}: warning: $*" >&2
+  jm_say "${JM_PROG}: warning: $*" >&2
 }
 
 jm_error() {
@@ -59,7 +26,7 @@ jm_error() {
     jm_ui_log ERROR "$*"
     return 0
   fi
-  jm_say 0 "${JM_PROG}: $*" >&2
+  jm_say "${JM_PROG}: $*" >&2
 }
 
 jm_json_string() {

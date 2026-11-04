@@ -54,7 +54,7 @@ jm_fetch_into() {
 
 jm_kept() {
   [ "${JM_FORCE}" = no ] && [ -f "${1%.*}.${JM_LANGUAGE}.srt" ] || return 1
-  [ "${JM_JSON}" = yes ] || jm_say 0 "$1: kept the ${JM_LANGUAGE} subtitle already there."
+  [ "${JM_JSON}" = yes ] || jm_say "$1: kept the ${JM_LANGUAGE} subtitle already there."
   JM_KEPT=$((JM_KEPT + 1))
   jm_json_video "$1" kept
 }
@@ -84,7 +84,7 @@ jm_fetch() {
     jm_json_video "${jm_fe_video}" missed
     return 0
   fi
-  [ "${JM_JSON}" = yes ] || jm_say 0 "${jm_fe_video}: saved a subtitle in ${JM_LANGUAGE}."
+  [ "${JM_JSON}" = yes ] || jm_say "${jm_fe_video}: saved a subtitle in ${JM_LANGUAGE}."
   JM_SAVED=$((JM_SAVED + 1))
   jm_json_video "${jm_fe_video}" saved
   jm_fetch_stem "${jm_fe_video}"

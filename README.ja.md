@@ -18,7 +18,7 @@
 
 </div>
 
-コマンドは1つ、テストは163件、シェルのモジュールは11個で、POSIX システム、gum、[subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
+コマンドは1つ、テストは161件、シェルのモジュールは11個で、POSIX システム、gum、[subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
 
 ---
 

@@ -19,7 +19,7 @@ Guidance for anyone, human or agent, changing jimaku. What jimaku is and how to 
 ## Names
 
 - Globals carry `JM_`; function-scoped variables carry a per-function `jm_` prefix, such as `jm_fe_`.
-- Settings come from `JIMAKU_<NAME>`, such as `JIMAKU_LANGUAGE`; test switches are `JIMAKU_TERMINAL`, `JIMAKU_TEST_SHELLS`, `JIMAKU_TEST_RECORD`, `JIMAKU_TEST_IMAGE`, `JIMAKU_TEST_GUM`, `JIMAKU_TEST_GUM_LOG`, `JIMAKU_TEST_GUM_ANSWERS` and `JIMAKU_TEST_GUM_SPIN`.
+- Settings come from `JIMAKU_<NAME>`, such as `JIMAKU_LANGUAGE`; test switches are `JIMAKU_TEST_SHELLS`, `JIMAKU_TEST_RECORD`, `JIMAKU_TEST_IMAGE`, `JIMAKU_TEST_GUM`, `JIMAKU_TEST_GUM_LOG`, `JIMAKU_TEST_GUM_ANSWERS` and `JIMAKU_TEST_GUM_SPIN`.
 - Output goes through `jm_say`, `jm_error` and `jm_warning`, which hand over to the `jm_ui_` helpers in [`lib/ui.sh`](lib/ui.sh) where gum draws.
 - Where gum draws, a run that downloads asks to confirm after the summary; a dry run and a run without a terminal never ask.
 

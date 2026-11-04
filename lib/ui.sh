@@ -134,14 +134,8 @@ jm_ui_log() {
   WARN) jm_ul_colour="${JM_UI_WARN}" ;;
   *) jm_ul_colour="${JM_UI_OK}" ;;
   esac
-  jm_ul_lines=$(printf '%s jimaku: %s\n' "${jm_ul_level}" "${jm_ul_text}" | jm_wrap 2)
-  jm_ul_first=$(printf '%s\n' "${jm_ul_lines}" | sed -n '1p')
-  jm_ul_rest=$(printf '%s\n' "${jm_ul_lines}" | sed '1d')
   jm_ul_label=$(jm_ui_ink "${jm_ul_colour}" --bold -- "${jm_ul_level}")
-  printf '%s%s\n' "${jm_ul_label}" "${jm_ul_first#"${jm_ul_level}"}" >&2
-  if [ -n "${jm_ul_rest}" ]; then
-    printf '%s\n' "${jm_ul_rest}" >&2
-  fi
+  printf '%s jimaku: %s\n' "${jm_ul_label}" "${jm_ul_text}" >&2
 }
 
 jm_ui_choose() {

@@ -19,9 +19,9 @@ jm_summary_where() {
   if [ "${JM_TARGETS}" -gt 1 ]; then
     printf 'Videos: %s in %s places\n' "${JM_FOUND}" "${JM_TARGETS}"
   elif [ "${JM_PLACE_KIND}" = video ]; then
-    jm_say 8 "Video:  ${JM_PLACE}"
+    jm_say "Video:  ${JM_PLACE}"
   else
-    jm_say 8 "Videos: ${JM_FOUND} in ${JM_PLACE}"
+    jm_say "Videos: ${JM_FOUND} in ${JM_PLACE}"
   fi
 }
 
@@ -33,7 +33,7 @@ jm_summary() {
   fi
   printf '\n'
   jm_summary_where
-  jm_say 8 "Plan:   ${JM_LANGUAGE} subtitles, saved as UTF-8 next to each video"
+  jm_say "Plan:   ${JM_LANGUAGE} subtitles, saved as UTF-8 next to each video"
   if [ "${JM_FORCE}" = yes ]; then
     printf '        any subtitle already there is replaced\n'
   else
@@ -70,7 +70,7 @@ jm_report_line() {
     jm_ui_log WARN "$2"
     return 0
   fi
-  jm_say 0 "$2"
+  jm_say "$2"
 }
 
 jm_report_json() {
@@ -118,7 +118,7 @@ jm_nothing() {
   if [ "${JM_TARGETS}" -gt 1 ] || [ -z "${JM_PLACE}" ]; then
     printf 'No videos found.\n'
   else
-    jm_say 0 "No videos in ${JM_PLACE}."
+    jm_say "No videos in ${JM_PLACE}."
   fi
 }
 
