@@ -385,7 +385,7 @@ kit() {
   [[ "${output}" == *"Finished"* ]]
   [[ "${output}" == *"state"* ]]
   [[ "${output}" == *"Careful"* ]]
-  [[ "${output}" == *"one"* ]]
+  [[ "${output}" == *"Disk:   one"$'\n'"        two"* ]]
   called "--border thick"
 }
 
