@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/gufranco/jimaku/compare/v1.3.0...v1.3.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* let the terminal wrap long messages ([7ddcb76](https://github.com/gufranco/jimaku/commit/7ddcb767e222d80adc9785ffcb581e8937054c85))
+* **ui:** line up table cells with wide letters ([32a2ac9](https://github.com/gufranco/jimaku/commit/32a2ac91a139589231e23abcd4e045c07b72900f))
+
 # [1.3.0](https://github.com/gufranco/jimaku/compare/v1.2.1...v1.3.0) (2026-11-04)
 
 
