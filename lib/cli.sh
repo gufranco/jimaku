@@ -4,6 +4,14 @@
 . "${JM_LIB:?}/state.sh"
 
 jm_usage() {
+  if jm_ui_out; then
+    jm_usage_text | jm_ui_markdown | jm_gum format --theme "${JM_UI_HELP}"
+    return 0
+  fi
+  jm_usage_text
+}
+
+jm_usage_text() {
   cat <<'USAGE'
 jimaku - download subtitles for videos and save them as UTF-8
 
@@ -28,6 +36,7 @@ options:
                                or last (default no)
   --dry-run                    list every video and download nothing
   --json                       print the result as one JSON object, for scripts
+  --theme NAME                 colours of the terminal interface, see notes
 
 environment:
   JIMAKU_LANGUAGE              the subtitle language when --language is not
@@ -47,6 +56,12 @@ notes:
   options, and a folder named help, doctor or version is reached by giving
   its path, such as ./help.
 
+  On a terminal with gum installed, jimaku draws its prompts, summary and
+  results with gum. --theme, else JIMAKU_THEME, else KODOUGU_THEME picks the
+  colours: kodougu, catppuccin-mocha, catppuccin-latte, dracula, nord,
+  gruvbox, tokyo-night or mono. KODOUGU_ACCENT=#RRGGBB replaces only the
+  accent, and NO_COLOR turns colour off.
+
 examples:
   jimaku ~/Movies
   jimaku --language en "Night of the Living Dead (1968).mkv"
@@ -55,12 +70,19 @@ USAGE
 }
 
 jm_cli_hint() {
-  jm_say 0 "${JM_PROG}: $1. run '${JM_PROG} help' for usage." >&2
+  jm_error "$1. run '${JM_PROG} help' for usage."
 }
 
 jm_cli_version() {
-  jm_version
   jm_cv_platform="$(uname -sr)" || jm_cv_platform="unknown"
+  if jm_ui_out; then
+    jm_cv_text="$(jm_version)"
+    jm_cv_badge="$(jm_ui_badge "${JM_UI_ACCENT}" "${jm_cv_text}")"
+    jm_cv_chip="$(jm_ui_chip "platform ${jm_cv_platform}")"
+    jm_gum join --horizontal "${jm_cv_badge}" " " "${jm_cv_chip}"
+    return 0
+  fi
+  jm_version
   printf 'platform: %s\n' "${jm_cv_platform}"
 }
 
@@ -70,6 +92,11 @@ jm_interactive() {
 }
 
 jm_prompt() {
+  if jm_ui_prompts; then
+    jm_pd_answer="$(jm_ui_input "$1" "$2")" || return 1
+    printf '%s\n' "${jm_pd_answer:-$2}"
+    return 0
+  fi
   printf '%s [%s]: ' "$1" "$2" >&2
   jm_pr_answer=""
   IFS= read -r jm_pr_answer || [ -n "${jm_pr_answer}" ] || return 1

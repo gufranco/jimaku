@@ -78,6 +78,20 @@ List every video and download nothing.
 Print the result as one JSON object on stdout, for scripts: the language,
 whether it was a dry run, the counts of videos found, saved, missed and failed,
 and each video with its result.
+.TP
+.BI \-\-theme " name"
+Colours of the terminal interface:
+.BR kodougu ,
+.BR catppuccin\-mocha ,
+.BR catppuccin\-latte ,
+.BR dracula ,
+.BR nord ,
+.BR gruvbox ,
+.B tokyo\-night
+or
+.BR mono .
+The default is
+.BR kodougu .
 .PP
 Every option that takes a value also takes the form
 .IR \-\-name = value ,
@@ -93,6 +107,24 @@ The subtitle language when
 .B \-\-language
 is not given, such as
 .BR pt\-BR .
+.TP
+.B JIMAKU_THEME
+The theme when
+.B \-\-theme
+is not given.
+.TP
+.B KODOUGU_THEME
+The theme of every kodougu tool, when neither
+.B \-\-theme
+nor
+.B JIMAKU_THEME
+is set.
+.TP
+.B KODOUGU_ACCENT
+A colour such as #CBA6F7 that replaces the accent of the theme.
+.TP
+.B NO_COLOR
+Turns colour off in every theme.
 .SH EXIT STATUS
 0 when every video got a subtitle, or there was no video. 1 when a video got
 no subtitle, subliminal failed, subliminal is missing, or the arguments are

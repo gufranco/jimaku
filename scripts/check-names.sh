@@ -11,7 +11,7 @@ fi
 
 unprefixed=$(cat "${root}"/bin/jimaku "${root}"/lib/*.sh |
   grep -oE '[$][{]?[A-Z][A-Z0-9_]*' | sed 's/^[$][{]*//' | sort -u |
-  grep -vE '^(JM|JIMAKU)_' | grep -vxE 'HOME|PATH|TMPDIR|ZSH_VERSION' || true)
+  grep -vE '^(JM|JIMAKU)_' | grep -vxE 'HOME|PATH|TMPDIR|ZSH_VERSION|KODOUGU_THEME|KODOUGU_ACCENT|NO_COLOR' || true)
 if [ -n "${unprefixed}" ]; then
   printf 'environment variable without the JIMAKU_ prefix:\n%s\n' "${unprefixed}" >&2
   exit 1

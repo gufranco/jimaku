@@ -18,9 +18,13 @@
 
 </div>
 
-コマンドは1つ、テストは84件、シェルのモジュールは10個で、POSIX システムと [subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
+コマンドは1つ、テストは163件、シェルのモジュールは11個で、POSIX システム、gum、[subliminal](https://github.com/Diaoul/subliminal) のほかに入れるものはありません。`jimaku` は日本語の「字幕」です。姉妹ツールの [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake)、[yakitsuke](https://github.com/gufranco/yakitsuke) は、ディスクの書き込み、ディスクの消去、フォルダーの仕分け、Video CD の作成を受け持ちます。
 
 ---
+
+<p align="center">
+  <img src="screens/hero.gif" alt="ターミナルで実行した jimaku：最初の入力から結果まで" width="800">
+</p>
 
 ```console
 $ jimaku --language pt-BR ~/Movies
@@ -46,6 +50,7 @@ Saved pt-BR subtitles for 2 of 3 videos.
 
 | ツール | 用途 | 入手方法 |
 |:-------|:-----|:---------|
+| [`gum`](https://github.com/charmbracelet/gum) | 端末の画面：メニュー、入力、表、配色 | `brew install gum`。Homebrewのformulaが自動でインストールします |
 | `subliminal` | 字幕サイトを検索し、最も合う字幕をダウンロードします | `brew install subliminal` または `apt install subliminal` |
 | `file`、`iconv`、`sed`、`awk` | 字幕の文字コードを判定して変換します | どの Linux と macOS にも入っています |
 
@@ -69,6 +74,7 @@ make install
 
 ```console
 $ jimaku doctor
+gum                ok       /opt/homebrew/bin/gum, 2.0.2
 subliminal         ok       /opt/homebrew/bin/subliminal, 2.8.0
 file               ok       /usr/bin/file, bsd
 iconv              ok       /usr/bin/iconv, bsd
@@ -92,6 +98,7 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | `--hearing-impaired`、`--no-hearing-impaired` | 聴覚障害者向けの字幕を先にするか、後にします。既定は後 |
 | `--dry-run` | 動画を一覧するだけで、何もダウンロードしません |
 | `--json` | 結果を1つのJSONオブジェクトとして出力します（スクリプト向け） |
+| `--theme <name>` | 端末の画面の配色 |
 
 | 環境変数 | 効果 |
 |:---------|:-----|
@@ -104,6 +111,14 @@ jimaku --dry-run .                                 # 対象になる動画を確
 ```
 
 `--language=en` の形も使え、`--` でオプションが終わります。jimaku はファミリー共通のコマンドライン規約に従います。内容は [FAMILY.md](FAMILY.md) にあります。
+
+### テーマ
+
+`gum`がインストールされた端末では、jimakuはメニュー、入力、表、メッセージをgumで描きます。パイプやスクリプトでは、出力はプレーンテキストのままです。配色は`--theme`、なければ`JIMAKU_THEME`、なければ`KODOUGU_THEME`で選びます。最後のものはkodouguのすべてのツールが共有します：`kodougu` （既定）、`catppuccin-mocha`、`catppuccin-latte`、`dracula`、`nord`、`gruvbox`、`tokyo-night`、`mono`。`KODOUGU_ACCENT=#RRGGBB`はアクセント色だけを置き換え、`NO_COLOR`は色を消します。
+
+```bash
+export KODOUGU_THEME=catppuccin-mocha
+```
 
 <a id="what-it-does"></a>
 
@@ -128,6 +143,39 @@ jimaku --dry-run .                                 # 対象になる動画を確
 
 よく使われる5つのツールセットのどれでも動きます。GNU または uutils の coreutils を使う Linux、そして macOS 標準のツール、その新しい Homebrew 版、Homebrew の uutils ツールを使う macOS です。macOS 標準のツールのうち Homebrew に新しい版があるものは、bash と zsh から iconv と file まで、両方の版でテストします。CI はそれぞれでテストを全部実行し、`jimaku doctor` は `gnu 9.7`、`uutils 0.12.0`、`bsd` のように各ツールの種類とバージョンを表示するので、バグ報告からどのツールで動いたかが分かります。
 
+<a id="screens"></a>
+
+## 画面
+
+<details>
+<summary><code>make screens</code> で実際の実行から録画したすべての画面</summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="screens/language.png" alt="jimaku: 字幕の言語の選択"><br><sub>字幕の言語の選択</sub></td>
+<td width="50%" valign="top"><img src="screens/confirm.png" alt="jimaku: 概要と確認"><br><sub>概要と確認</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/result.png" alt="jimaku: 結果"><br><sub>結果</sub></td>
+<td width="50%" valign="top"><img src="screens/dry-run.png" alt="jimaku: 何も変えないドライラン"><br><sub>何も変えないドライラン</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/kept.png" alt="jimaku: --no-force は既存の字幕を残す"><br><sub>--no-force は既存の字幕を残す</sub></td>
+<td width="50%" valign="top"><img src="screens/error.png" alt="jimaku: エラー"><br><sub>エラー</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/doctor.png" alt="jimaku: doctor が必要なツールをすべて確認"><br><sub>doctor が必要なツールをすべて確認</sub></td>
+<td width="50%" valign="top"><img src="screens/themes.png" alt="jimaku: 6 つのテーマでのバージョン表示"><br><sub>6 つのテーマでのバージョン表示</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/help.png" alt="jimaku: ヘルプ"><br><sub>ヘルプ</sub></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+</details>
+
 <a id="development"></a>
 
 ## 開発
@@ -140,6 +188,7 @@ jimaku --dry-run .                                 # 対象になる動画を確
 | `make test-all` | すべてのシェルで同じテスト。macOS では bash と zsh の両方の版を含みます |
 | `make test-linux` | Ubuntu コンテナで同じテスト |
 | `make coverage` | この Mac と Ubuntu コンテナでの bashcov の行カバレッジを合算し、CI が強制する 100% のゲート |
+| `make screens` | macOS で、README の画面を実物のツールから VHS で録画します |
 
 本物の subliminal はネットワークを使うので、テストは `PATH` に置いた偽の `subliminal` に対して動きます。`file`、`iconv`、`sed` は本物で、失敗は `PATH` に置いた小さなラッパーで起こします。`main` への push で CI が通ると semantic-release が動き、`feat` か `fix` のコミットでリリースを出し、[`lib/core.sh`](lib/core.sh) の `JIMAKU_VERSION` と CHANGELOG を更新し、Homebrew の formula を上げます。
 

@@ -627,3 +627,59 @@ download_calls() {
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == "No videos in ${FILMS}." ]]
 }
+
+@test "a file named on the command line that is not a video is skipped with a warning" {
+  # Arrange
+  videos "Charade (1963).mkv" "Charade (1963).en.srt"
+
+  # Act
+  run jm_test_run --language en "${FILMS}/Charade (1963).mkv" "${FILMS}/Charade (1963).en.srt"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"jimaku: warning: ${FILMS}/Charade (1963).en.srt is not a video, so it is skipped."* ]]
+  [[ "${output}" == *"Saved en subtitles for 1 video."* ]]
+  run download_calls
+  [[ "${output}" == "download -l en -e utf-8 -f -C n,fo,hi -- ${FILMS}/Charade (1963).mkv" ]]
+}
+
+@test "only a file that is not a video finds no videos" {
+  # Arrange
+  videos "notes.txt"
+
+  # Act
+  run jm_test_run --language en "${FILMS}/notes.txt"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"No videos found."* ]]
+}
+
+@test "--no-force keeps a subtitle already there and reports it" {
+  # Arrange
+  videos "Charade (1963).mkv" "Charade (1963).en.srt"
+
+  # Act
+  run jm_test_run --no-force --language en "${FILMS}/Charade (1963).mkv"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"${FILMS}/Charade (1963).mkv: kept the en subtitle already there."* ]]
+  [[ "${output}" == *"Every video already had its en subtitle, so nothing was downloaded."* ]]
+  run download_calls
+  [[ "${output}" == "" ]]
+}
+
+@test "--no-force fetches only the videos that have no subtitle yet" {
+  # Arrange
+  videos "a.mkv" "b.mkv"
+  printf '1\n00:00:01,000 --> 00:00:02,000\nHello\n' >"${FILMS}/a.en.srt"
+
+  # Act
+  run jm_test_run --no-force --language en "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == *"${FILMS}/a.mkv: kept the en subtitle already there."* ]]
+  [[ "${output}" == *"Saved en subtitles for 1 video."* ]]
+}

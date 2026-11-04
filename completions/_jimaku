@@ -21,6 +21,7 @@ _jimaku() {
     '(--hearing-impaired)--no-hearing-impaired[put subtitles for the hearing impaired last]' \
     '--dry-run[list every video and download nothing]' \
     '--json[print the result as one JSON object, for scripts]' \
+    '--theme[colours of the terminal interface]:theme:(kodougu catppuccin-mocha catppuccin-latte dracula nord gruvbox tokyo-night mono)' \
     '*:video or folder:_files'
 }
 

@@ -3,6 +3,8 @@
 JIMAKU_TESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "${JIMAKU_TESTS_DIR}/.." && pwd)"
 export JIMAKU_TESTS_DIR REPO_DIR
+PATH="${JIMAKU_TESTS_DIR}/bin:${PATH}"
+export PATH
 
 jm_test_path() {
   if [[ -n "${SHIMS:-}" && -d "${SHIMS}" ]]; then

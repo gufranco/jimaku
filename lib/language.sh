@@ -47,8 +47,25 @@ jm_language_pick() {
   esac
 }
 
+jm_language_options() {
+  printf '%s\nAnother language, typed as a code|other\n' "$1" | jm_ui_choose "Subtitle language" --label-delimiter "|"
+}
+
+jm_language_chosen() {
+  jm_lc_menu="$(jm_language_menu | awk '{ code = $1; $1 = ""; printf "%-6s%s|%s\n", code, $0, code }')"
+  jm_lc_code="$(jm_language_options "${jm_lc_menu}")" || return 1
+  if [ "${jm_lc_code}" = other ]; then
+    jm_lc_code="$(jm_ui_input "Language code" "such as pt-BR or en")" || return 1
+  fi
+  printf '%s\n' "${jm_lc_code}"
+}
+
 jm_language_ask() {
   jm_la_tries=0
+  if jm_ui_prompts; then
+    jm_language_ask_drawn
+    return
+  fi
   jm_language_show
   while [ "${jm_la_tries}" -lt 3 ]; do
     jm_la_answer="$(jm_prompt "Language, a number or a code" "${JM_DEFAULT_LANGUAGE}")" || return 1
@@ -57,6 +74,20 @@ jm_language_ask() {
       return 0
     fi
     jm_error "'${jm_la_answer}' is not a number from the list or a language code such as pt-BR or en."
+    jm_la_tries=$((jm_la_tries + 1))
+  done
+  jm_cli_hint "no language was chosen"
+  return 1
+}
+
+jm_language_ask_drawn() {
+  while [ "${jm_la_tries}" -lt 3 ]; do
+    jm_ld_code="$(jm_language_chosen)" || return 1
+    if jm_language_valid "${jm_ld_code}"; then
+      JM_LANGUAGE="${jm_ld_code}"
+      return 0
+    fi
+    jm_error "'${jm_ld_code}' is not a language code such as pt-BR or en."
     jm_la_tries=$((jm_la_tries + 1))
   done
   jm_cli_hint "no language was chosen"
