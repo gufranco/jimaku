@@ -89,11 +89,12 @@ teardown() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" == "subliminal         ok       ${SHIMS}/subliminal, 2.8.0" ]]
-  [[ "${lines[1]}" == "file               ok       "* ]]
-  [[ "${lines[2]}" == "iconv              ok       ${iconv_path}, "* ]]
-  [[ "${lines[3]}" == "sed                ok       "* ]]
-  [[ "${lines[4]}" == "awk                ok       "* ]]
+  [[ "${lines[0]}" == "gum                ok       "* ]]
+  [[ "${lines[1]}" == "subliminal         ok       ${SHIMS}/subliminal, 2.8.0" ]]
+  [[ "${lines[2]}" == "file               ok       "* ]]
+  [[ "${lines[3]}" == "iconv              ok       ${iconv_path}, "* ]]
+  [[ "${lines[4]}" == "sed                ok       "* ]]
+  [[ "${lines[5]}" == "awk                ok       "* ]]
 }
 
 @test "doctor fails and says how to install a missing subliminal" {
@@ -106,7 +107,7 @@ teardown() {
 
   # Assert
   [[ "${status}" -eq 1 ]]
-  [[ "${lines[0]}" == "subliminal         missing  required: brew install subliminal, or apt install subliminal" ]]
+  [[ "${lines[1]}" == "subliminal         missing  required: brew install subliminal, or apt install subliminal" ]]
 }
 
 @test "doctor fails and names a missing iconv" {
@@ -119,7 +120,7 @@ teardown() {
 
   # Assert
   [[ "${status}" -eq 1 ]]
-  [[ "${lines[2]}" == "iconv              missing  required" ]]
+  [[ "${lines[3]}" == "iconv              missing  required" ]]
 }
 
 @test "the tool runs by its bare name from inside its own folder" {

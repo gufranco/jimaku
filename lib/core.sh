@@ -47,10 +47,18 @@ jm_say() {
 }
 
 jm_warning() {
+  if jm_ui_err; then
+    jm_ui_log WARN "$*"
+    return 0
+  fi
   jm_say 0 "${JM_PROG}: warning: $*" >&2
 }
 
 jm_error() {
+  if jm_ui_err; then
+    jm_ui_log ERROR "$*"
+    return 0
+  fi
   jm_say 0 "${JM_PROG}: $*" >&2
 }
 

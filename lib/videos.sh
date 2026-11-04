@@ -26,6 +26,10 @@ jm_tally_target() {
     done
     return 0
   fi
+  if [ -f "${jm_tt_path}" ] && ! jm_is_video "${jm_tt_path}"; then
+    jm_warning "${jm_tt_path} is not a video, so it is skipped."
+    return 0
+  fi
   if [ -f "${jm_tt_path}" ]; then
     jm_place "${jm_tt_path}" video
     JM_FOUND=$((JM_FOUND + 1))
@@ -46,7 +50,7 @@ jm_show_video() {
 jm_show_target() {
   jm_st_path="$(jm_expand "$1")"
   if [ -f "${jm_st_path}" ]; then
-    jm_show_video "${jm_st_path}"
+    jm_is_video "${jm_st_path}" && jm_show_video "${jm_st_path}"
     return 0
   fi
   for jm_st_file in "${jm_st_path}"/*; do
@@ -58,7 +62,7 @@ jm_show_target() {
 jm_fetch_target() {
   jm_ft_path="$(jm_expand "$1")"
   if [ -f "${jm_ft_path}" ]; then
-    jm_fetch "${jm_ft_path}"
+    jm_is_video "${jm_ft_path}" && jm_fetch "${jm_ft_path}"
     return 0
   fi
   for jm_ft_file in "${jm_ft_path}"/*; do

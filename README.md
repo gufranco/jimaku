@@ -18,9 +18,13 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 
 </div>
 
-One command, 84 tests, 10 shell modules, and nothing to install beyond a POSIX system and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
+One command, 163 tests, 11 shell modules, and nothing to install beyond a POSIX system, gum and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
 
 ---
+
+<p align="center">
+  <img src="screens/hero.gif" alt="jimaku running in a terminal, from the first prompt to the result" width="800">
+</p>
 
 ```console
 $ jimaku --language pt-BR ~/Movies
@@ -46,6 +50,7 @@ Saved pt-BR subtitles for 2 of 3 videos.
 
 | Tool | Why | Install |
 |:-----|:----|:--------|
+| [`gum`](https://github.com/charmbracelet/gum) | The terminal interface: menus, prompts, tables and colours | `brew install gum`. Installed automatically by the Homebrew formula |
 | `subliminal` | Searches the subtitle providers and downloads the best match | `brew install subliminal` or `apt install subliminal` |
 | `file`, `iconv`, `sed`, `awk` | Tell a subtitle's encoding and convert it | Part of every Linux and macOS system |
 
@@ -69,6 +74,7 @@ make install
 
 ```console
 $ jimaku doctor
+gum                ok       /opt/homebrew/bin/gum, 2.0.2
 subliminal         ok       /opt/homebrew/bin/subliminal, 2.8.0
 file               ok       /usr/bin/file, bsd
 iconv              ok       /usr/bin/iconv, bsd
@@ -92,6 +98,7 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | `--hearing-impaired`, `--no-hearing-impaired` | Put subtitles for the hearing impaired first, or last. Default no |
 | `--dry-run` | List every video and download nothing |
 | `--json` | Print the result as one JSON object, for scripts |
+| `--theme <name>` | Colours of the terminal interface |
 
 | Variable | Effect |
 |:---------|:-------|
@@ -104,6 +111,14 @@ jimaku --dry-run .                                 # see which videos would be f
 ```
 
 `--language=en` works too, and `--` ends the options. jimaku follows the shared command-line contract of its family, described in [FAMILY.md](FAMILY.md).
+
+### Themes
+
+On a terminal with `gum` installed, jimaku draws its menus, prompts, tables and messages with gum; in a pipe or a script the output stays plain text. `--theme`, else `JIMAKU_THEME`, else `KODOUGU_THEME` picks the colours, the last one shared by every kodougu tool: `kodougu` (default), `catppuccin-mocha`, `catppuccin-latte`, `dracula`, `nord`, `gruvbox`, `tokyo-night` or `mono`. `KODOUGU_ACCENT=#RRGGBB` replaces only the accent, and `NO_COLOR` turns colour off.
+
+```bash
+export KODOUGU_THEME=catppuccin-mocha
+```
 
 <a id="what-it-does"></a>
 
@@ -126,6 +141,39 @@ Everything is POSIX `sh` with ShellCheck `-o all` at zero findings. The suites r
 
 Every run works on the five toolsets in common use: Linux with GNU or uutils coreutils, and macOS with the tools it ships, Homebrew's newer builds of them, or Homebrew's uutils tools. Every tool macOS ships that Homebrew also builds newer, from bash and zsh to iconv and file, is tested in both builds. CI runs the whole suite on each, and `jimaku doctor` names the flavor and version of each tool, such as `gnu 9.7`, `uutils 0.12.0` or `bsd`, so a bug report says which tools ran.
 
+<a id="screens"></a>
+
+## Screens
+
+<details>
+<summary>Every screen, recorded from a real run with <code>make screens</code></summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="screens/language.png" alt="jimaku: Picking the subtitle language"><br><sub>Picking the subtitle language</sub></td>
+<td width="50%" valign="top"><img src="screens/confirm.png" alt="jimaku: The summary, then the confirmation"><br><sub>The summary, then the confirmation</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/result.png" alt="jimaku: The result"><br><sub>The result</sub></td>
+<td width="50%" valign="top"><img src="screens/dry-run.png" alt="jimaku: A dry run, changing nothing"><br><sub>A dry run, changing nothing</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/kept.png" alt="jimaku: --no-force keeps a subtitle already there"><br><sub>--no-force keeps a subtitle already there</sub></td>
+<td width="50%" valign="top"><img src="screens/error.png" alt="jimaku: An error"><br><sub>An error</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/doctor.png" alt="jimaku: doctor checks every tool it needs"><br><sub>doctor checks every tool it needs</sub></td>
+<td width="50%" valign="top"><img src="screens/themes.png" alt="jimaku: The version badge in six themes"><br><sub>The version badge in six themes</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/help.png" alt="jimaku: The help page"><br><sub>The help page</sub></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+</details>
+
 <a id="development"></a>
 
 ## Development
@@ -138,6 +186,7 @@ Every run works on the five toolsets in common use: Linux with GNU or uutils cor
 | `make test-all` | The same tests under every shell, both builds of bash and zsh included on macOS |
 | `make test-linux` | The same tests in an Ubuntu container |
 | `make coverage` | bashcov line coverage on this Mac and in the Ubuntu container, merged, with the 100% gate CI enforces |
+| `make screens` | Record the README screens from the real tool with VHS, on macOS |
 
 The tests run against a fake `subliminal` placed on `PATH`, since the real one needs the network; `file`, `iconv` and `sed` are the real tools, with failures injected through small wrappers on `PATH`. Once CI passes on a push to `main`, semantic-release runs: a `feat` or `fix` commit publishes a release, updates `JIMAKU_VERSION` in [`lib/core.sh`](lib/core.sh) and the CHANGELOG, and bumps the Homebrew formula.
 

@@ -18,9 +18,13 @@
 
 </div>
 
-一條指令，84 個測試，10 個 shell 模組，除了 POSIX 系統和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
+一條指令，163 個測試，11 個 shell 模組，除了 POSIX 系統、gum 和 [subliminal](https://github.com/Diaoul/subliminal) 之外無需安裝任何東西。`jimaku` 是日文「字幕」。姊妹工具 [kakikomi](https://github.com/gufranco/kakikomi)、[kiyome](https://github.com/gufranco/kiyome)、[shiwake](https://github.com/gufranco/shiwake) 和 [yakitsuke](https://github.com/gufranco/yakitsuke) 分別負責寫入磁碟、抹除磁碟、整理資料夾和製作 Video CD。
 
 ---
+
+<p align="center">
+  <img src="screens/hero.gif" alt="在終端機中執行的 jimaku：由第一個輸入到結果" width="800">
+</p>
 
 ```console
 $ jimaku --language pt-BR ~/Movies
@@ -46,6 +50,7 @@ Saved pt-BR subtitles for 2 of 3 videos.
 
 | 工具 | 用途 | 安裝 |
 |:-----|:-----|:-----|
+| [`gum`](https://github.com/charmbracelet/gum) | 終端介面：選單、輸入、表格及配色 | `brew install gum`。Homebrew formula 會自動安裝 |
 | `subliminal` | 搜尋字幕網站並下載最吻合的字幕 | `brew install subliminal` 或 `apt install subliminal` |
 | `file`、`iconv`、`sed`、`awk` | 判斷字幕的編碼並轉換 | 每個 Linux 和 macOS 系統都內置 |
 
@@ -69,6 +74,7 @@ make install
 
 ```console
 $ jimaku doctor
+gum                ok       /opt/homebrew/bin/gum, 2.0.2
 subliminal         ok       /opt/homebrew/bin/subliminal, 2.8.0
 file               ok       /usr/bin/file, bsd
 iconv              ok       /usr/bin/iconv, bsd
@@ -92,6 +98,7 @@ awk                ok       /usr/bin/awk, bsd 20200816
 | `--hearing-impaired`、`--no-hearing-impaired` | 把聽障字幕排在前面或後面。預設排在後面 |
 | `--dry-run` | 只列出影片，不下載任何東西 |
 | `--json` | 以一個 JSON 物件輸出結果，供程式腳本使用 |
+| `--theme <name>` | 終端介面的配色 |
 
 | 環境變數 | 效果 |
 |:---------|:-----|
@@ -104,6 +111,14 @@ jimaku --dry-run .                                 # 查看會處理哪些影片
 ```
 
 亦可寫成 `--language=en`，`--` 表示選項結束。jimaku 遵循其工具家族共用的命令列約定，見 [FAMILY.md](FAMILY.md)。
+
+### 主題
+
+在裝有 `gum` 的終端機上，jimaku 用 gum 繪製選單、輸入、表格及訊息；在管道或指令碼中，輸出仍是純文字。配色依次由 `--theme`、`JIMAKU_THEME`、`KODOUGU_THEME` 決定，最後一個由所有 kodougu 工具共用：`kodougu`（預設）、`catppuccin-mocha`、`catppuccin-latte`、`dracula`、`nord`、`gruvbox`、`tokyo-night` 或 `mono`。`KODOUGU_ACCENT=#RRGGBB` 只取代強調色，`NO_COLOR` 關閉顏色。
+
+```bash
+export KODOUGU_THEME=catppuccin-mocha
+```
 
 <a id="what-it-does"></a>
 
@@ -128,6 +143,39 @@ jimaku --dry-run .                                 # 查看會處理哪些影片
 
 在五種常見工具集上都能執行：使用 GNU 或 uutils coreutils 的 Linux，以及使用 macOS 內置的工具、Homebrew 中較新的版本或 Homebrew 的 uutils 工具的 macOS。macOS 內置而 Homebrew 有較新版本的工具，由 bash 和 zsh 到 iconv 和 file，兩個版本都會測試。CI 在每種工具集上執行全部測試，`jimaku doctor` 會寫出每個工具的類型和版本，例如 `gnu 9.7`、`uutils 0.12.0` 或 `bsd`，讓錯誤報告說明用了哪些工具。
 
+<a id="screens"></a>
+
+## 畫面
+
+<details>
+<summary>全部畫面，均由 <code>make screens</code> 錄自真實執行</summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="screens/language.png" alt="jimaku: 選擇字幕語言"><br><sub>選擇字幕語言</sub></td>
+<td width="50%" valign="top"><img src="screens/confirm.png" alt="jimaku: 概要與確認"><br><sub>概要與確認</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/result.png" alt="jimaku: 結果"><br><sub>結果</sub></td>
+<td width="50%" valign="top"><img src="screens/dry-run.png" alt="jimaku: 不作任何更改的試運行"><br><sub>不作任何更改的試運行</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/kept.png" alt="jimaku: --no-force 保留現有的字幕"><br><sub>--no-force 保留現有的字幕</sub></td>
+<td width="50%" valign="top"><img src="screens/error.png" alt="jimaku: 錯誤"><br><sub>錯誤</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/doctor.png" alt="jimaku: doctor 檢查所需的每個工具"><br><sub>doctor 檢查所需的每個工具</sub></td>
+<td width="50%" valign="top"><img src="screens/themes.png" alt="jimaku: 六種主題下的版本標記"><br><sub>六種主題下的版本標記</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="screens/help.png" alt="jimaku: 說明頁"><br><sub>說明頁</sub></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+</details>
+
 <a id="development"></a>
 
 ## 開發
@@ -140,6 +188,7 @@ jimaku --dry-run .                                 # 查看會處理哪些影片
 | `make test-all` | 在每種 shell 下執行同樣的測試，macOS 上包括 bash 和 zsh 的兩個版本 |
 | `make test-linux` | 在 Ubuntu 容器中執行同樣的測試 |
 | `make coverage` | 合併這部 Mac 與 Ubuntu 容器中的 bashcov 行覆蓋率，以及 CI 強制的 100% 門檻 |
+| `make screens` | 在 macOS 上用 VHS 從真實工具錄製 README 的畫面 |
 
 真正的 subliminal 需要網絡，所以測試針對放在 `PATH` 上的假 `subliminal` 執行；`file`、`iconv` 和 `sed` 是真實工具，故障透過放在 `PATH` 上的小型包裝腳本注入。推送到 `main` 且 CI 通過後會執行 semantic-release：`feat` 或 `fix` 提交會發佈新版本，更新 [`lib/core.sh`](lib/core.sh) 中的 `JIMAKU_VERSION` 和 CHANGELOG，並更新 Homebrew formula。
 

@@ -14,6 +14,8 @@ JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
 
 # shellcheck source=SCRIPTDIR/../lib/core.sh
 . "${JM_LIB}/core.sh"
+# shellcheck source=SCRIPTDIR/../lib/ui.sh
+. "${JM_LIB}/ui.sh"
 # shellcheck source=SCRIPTDIR/../lib/cli.sh
 . "${JM_LIB}/cli.sh"
 # shellcheck source=SCRIPTDIR/../lib/doctor.sh
@@ -32,6 +34,44 @@ JM_LIB="$(cd "${jm_self%/*}/../lib" && pwd)" || exit 1
 . "${JM_LIB}/run.sh"
 
 jm_main() {
+  jm_mn_count=$#
+  jm_mn_literal=no
+  while [ "${jm_mn_count}" -gt 0 ]; do
+    jm_mn_arg="$1"
+    shift
+    jm_mn_count=$((jm_mn_count - 1))
+    case "${jm_mn_literal}:${jm_mn_arg}" in
+    no:--) jm_mn_literal=yes ;;
+    no:--theme=*)
+      JM_THEME="${jm_mn_arg#--theme=}"
+      continue
+      ;;
+    no:--theme)
+      [ "${jm_mn_count}" -gt 0 ] || jm_main_stop "option '--theme' needs a value"
+      JM_THEME="$1"
+      shift
+      jm_mn_count=$((jm_mn_count - 1))
+      continue
+      ;;
+    *) ;;
+    esac
+    set -- "$@" "${jm_mn_arg}"
+  done
+  jm_ui_setup || jm_main_fail "${JM_UI_PROBLEM}"
+  jm_dispatch "$@"
+}
+
+jm_main_stop() {
+  jm_cli_hint "$1"
+  exit 1
+}
+
+jm_main_fail() {
+  jm_error "$1"
+  exit 1
+}
+
+jm_dispatch() {
   case "${1:-}" in
   help | -h | --help) jm_usage ;;
   version | -V | --version) jm_cli_version ;;

@@ -4,7 +4,39 @@
 . "${JM_LIB:?}/state.sh"
 
 jm_doctor_row() {
+  if jm_ui_out; then
+    case "$2" in
+    ok) jm_dw_state="@ok:ok" ;;
+    *) jm_dw_state="@bad:$2" ;;
+    esac
+    JM_DOCTOR_ROWS="${JM_DOCTOR_ROWS}$1	${jm_dw_state}	$3
+"
+    return 0
+  fi
   printf '%-18s %-8s %s\n' "$1" "$2" "$3"
+}
+
+jm_doctor_report() {
+  if ! jm_ui_out; then
+    return 0
+  fi
+  printf 'Tool\tState\tDetail\n%s' "${JM_DOCTOR_ROWS}" | jm_ui_table
+  if [ "$1" -ne 0 ]; then
+    jm_ui_log ERROR "a required tool is missing. install it and run jimaku doctor again."
+    return 0
+  fi
+  jm_ui_done "Ready. Every tool jimaku needs is here."
+}
+
+jm_doctor_gum() {
+  jm_dg_found="$(command -v gum 2>/dev/null || true)"
+  if [ -z "${jm_dg_found}" ]; then
+    jm_doctor_row gum missing "install with: brew install gum, or see https://github.com/charmbracelet/gum"
+    return 1
+  fi
+  jm_dg_raw="$(gum --version 2>/dev/null || true)"
+  jm_dg_version="$(jm_flavor_version "${jm_dg_raw}")"
+  jm_doctor_row gum ok "${jm_dg_found}${jm_dg_version:+, ${jm_dg_version}}"
 }
 
 jm_flavor_version() {
@@ -77,9 +109,11 @@ jm_doctor_subliminal() {
 
 jm_doctor() {
   jm_dr_status=0
+  jm_doctor_gum || jm_dr_status=1
   jm_doctor_subliminal || jm_dr_status=1
   for jm_dr_tool in file iconv sed awk; do
     jm_doctor_tool "${jm_dr_tool}" || jm_dr_status=1
   done
+  jm_doctor_report "${jm_dr_status}"
   return "${jm_dr_status}"
 }

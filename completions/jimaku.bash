@@ -5,12 +5,16 @@ _jimaku() {
   local cur prev words
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
+  if [[ "${COMP_WORDS[COMP_CWORD - 1]}" == "--theme" ]]; then
+    COMPREPLY=($(compgen -W "kodougu catppuccin-mocha catppuccin-latte dracula nord gruvbox tokyo-night mono" -- "${COMP_WORDS[COMP_CWORD]}"))
+    return
+  fi
   if [[ "${prev}" == "--language" ]]; then
     COMPREPLY=($(compgen -W "en es pt-BR fr de it pt ru ar ja ko zh" -- "${cur}"))
     return
   fi
   if [[ "${cur}" == -* ]]; then
-    COMPREPLY=($(compgen -W "--language --force --no-force --hearing-impaired --no-hearing-impaired --dry-run --json" -- "${cur}"))
+    COMPREPLY=($(compgen -W "--language --force --no-force --hearing-impaired --no-hearing-impaired --dry-run --json --theme" -- "${cur}"))
     return
   fi
   words="$(compgen -f -- "${cur}" || true)"

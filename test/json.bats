@@ -23,7 +23,7 @@ teardown() {
   # Arrange
   : >"${FILMS}/a.mkv"
   : >"${FILMS}/b.mkv"
-  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":2,\"saved\":2,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/a.mkv\",\"result\":\"saved\"},{\"video\":\"${FILMS}/b.mkv\",\"result\":\"saved\"}]}"
+  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":2,\"saved\":2,\"kept\":0,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/a.mkv\",\"result\":\"saved\"},{\"video\":\"${FILMS}/b.mkv\",\"result\":\"saved\"}]}"
 
   # Act
   run jm_test_run --json "${FILMS}"
@@ -37,7 +37,7 @@ teardown() {
 @test "--json with --dry-run lists the videos as planned and downloads nothing" {
   # Arrange
   : >"${FILMS}/a.mkv"
-  local expected="{\"language\":\"pt-BR\",\"dry_run\":true,\"found\":1,\"saved\":0,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/a.mkv\",\"result\":\"planned\"}]}"
+  local expected="{\"language\":\"pt-BR\",\"dry_run\":true,\"found\":1,\"saved\":0,\"kept\":0,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/a.mkv\",\"result\":\"planned\"}]}"
 
   # Act
   run jm_test_run --json --dry-run --language pt-BR "${FILMS}"
@@ -53,7 +53,7 @@ teardown() {
   : >"${FILMS}/gone.mkv"
   : >"${FILMS}/broken.mkv"
   export JIMAKU_FAKE_NONE=gone JIMAKU_FAKE_FAIL=broken
-  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":2,\"saved\":0,\"missed\":1,\"failed\":1,\"videos\":[{\"video\":\"${FILMS}/broken.mkv\",\"result\":\"failed\"},{\"video\":\"${FILMS}/gone.mkv\",\"result\":\"missed\"}]}"
+  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":2,\"saved\":0,\"kept\":0,\"missed\":1,\"failed\":1,\"videos\":[{\"video\":\"${FILMS}/broken.mkv\",\"result\":\"failed\"},{\"video\":\"${FILMS}/gone.mkv\",\"result\":\"missed\"}]}"
 
   # Act
   run --separate-stderr jm_test_run --json "${FILMS}"
@@ -66,7 +66,7 @@ teardown() {
 
 @test "--json on a folder with no videos reports zero videos" {
   # Arrange
-  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":0,\"saved\":0,\"missed\":0,\"failed\":0,\"videos\":[]}"
+  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":0,\"saved\":0,\"kept\":0,\"missed\":0,\"failed\":0,\"videos\":[]}"
 
   # Act
   run jm_test_run --json --language en "${FILMS}"
@@ -80,10 +80,24 @@ teardown() {
   # Arrange
   local name='say "hi" \ now.mkv'
   : >"${FILMS}/${name}"
-  local expected="{\"language\":\"en\",\"dry_run\":true,\"found\":1,\"saved\":0,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/say \\\"hi\\\" \\\\ now.mkv\",\"result\":\"planned\"}]}"
+  local expected="{\"language\":\"en\",\"dry_run\":true,\"found\":1,\"saved\":0,\"kept\":0,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/say \\\"hi\\\" \\\\ now.mkv\",\"result\":\"planned\"}]}"
 
   # Act
   run jm_test_run --json --dry-run "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ "${output}" == "${expected}" ]]
+}
+
+@test "--json counts and names a subtitle --no-force kept" {
+  # Arrange
+  : >"${FILMS}/a.mkv"
+  printf '1\n00:00:01,000 --> 00:00:02,000\nHello\n' >"${FILMS}/a.en.srt"
+  local expected="{\"language\":\"en\",\"dry_run\":false,\"found\":1,\"saved\":0,\"kept\":1,\"missed\":0,\"failed\":0,\"videos\":[{\"video\":\"${FILMS}/a.mkv\",\"result\":\"kept\"}]}"
+
+  # Act
+  run jm_test_run --json --no-force "${FILMS}"
 
   # Assert
   [[ "${status}" -eq 0 ]]

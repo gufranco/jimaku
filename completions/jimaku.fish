@@ -9,3 +9,4 @@ complete -c jimaku -l hearing-impaired -d 'put subtitles for the hearing impaire
 complete -c jimaku -l no-hearing-impaired -d 'put subtitles for the hearing impaired last'
 complete -c jimaku -l dry-run -d 'list every video and download nothing'
 complete -c jimaku -l json -d 'print the result as one JSON object, for scripts'
+complete -c jimaku -l theme -r -a 'kodougu catppuccin-mocha catppuccin-latte dracula nord gruvbox tokyo-night mono' -d 'colours of the terminal interface'

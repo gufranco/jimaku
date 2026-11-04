@@ -29,8 +29,39 @@ jm_fetch_stem() {
   return 0
 }
 
+jm_fetch_run() {
+  jm_fr2_video="$1"
+  shift
+  if ! jm_ui_err; then
+    subliminal "$@" -- "${jm_fr2_video}" 2>&1 </dev/null
+    return
+  fi
+  jm_fr2_out="$(mktemp "${TMPDIR:-/tmp}/jimaku-said.XXXXXX")"
+  jm_fr2_status=0
+  jm_ui_spin "Searching for ${jm_fr2_video##*/}" "${jm_fr2_out}.err" jm_fetch_into "${jm_fr2_out}" "${jm_fr2_video}" "$@" ||
+    jm_fr2_status=$?
+  cat "${jm_fr2_out}"
+  rm -f "${jm_fr2_out}" "${jm_fr2_out}.err"
+  return "${jm_fr2_status}"
+}
+
+jm_fetch_into() {
+  jm_fi_out="$1"
+  jm_fi_video="$2"
+  shift 2
+  subliminal "$@" -- "${jm_fi_video}" >"${jm_fi_out}" 2>&1 </dev/null
+}
+
+jm_kept() {
+  [ "${JM_FORCE}" = no ] && [ -f "${1%.*}.${JM_LANGUAGE}.srt" ] || return 1
+  [ "${JM_JSON}" = yes ] || jm_say 0 "$1: kept the ${JM_LANGUAGE} subtitle already there."
+  JM_KEPT=$((JM_KEPT + 1))
+  jm_json_video "$1" kept
+}
+
 jm_fetch() {
   jm_fe_video="$1"
+  jm_kept "${jm_fe_video}" && return 0
   set -- download -l "${JM_LANGUAGE}" -e utf-8
   [ "${JM_FORCE}" = no ] || set -- "$@" -f
   case "${JM_CATEGORIES}:${JM_HEARING}" in
@@ -39,7 +70,7 @@ jm_fetch() {
   no:yes) set -- "$@" -hi ;;
   *) ;;
   esac
-  if ! jm_fe_said="$(subliminal "$@" -- "${jm_fe_video}" 2>&1 </dev/null)"; then
+  if ! jm_fe_said="$(jm_fetch_run "${jm_fe_video}" "$@")"; then
     jm_error "subliminal failed for ${jm_fe_video}."
     jm_said subliminal "${jm_fe_said}"
     JM_FAILED=$((JM_FAILED + 1))
