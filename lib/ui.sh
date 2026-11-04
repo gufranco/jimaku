@@ -178,17 +178,17 @@ jm_ui_confirm() {
 }
 
 jm_ui_summary() {
-  jm_us2_lines=""
-  while [ $# -ge 2 ]; do
+  jm_us2_pairs=$(($# / 2))
+  while [ "${jm_us2_pairs}" -gt 0 ]; do
     jm_us2_label=$(printf '%-7s' "$1")
     jm_us2_label=$(jm_ui_ink "${JM_UI_MUTED}" -- "${jm_us2_label}")
     jm_us2_value=$(jm_ui_ink "${JM_UI_TEXT}" --bold -- "$2")
-    jm_us2_lines="${jm_us2_lines}${jm_us2_lines:+
-}${jm_us2_label} ${jm_us2_value}"
     shift 2
+    set -- "$@" "${jm_us2_label} ${jm_us2_value}"
+    jm_us2_pairs=$((jm_us2_pairs - 1))
   done
   printf '\n'
-  jm_gum style --border rounded --border-foreground "${JM_UI_MUTED}" --padding "0 1" -- "${jm_us2_lines}"
+  jm_gum style --border rounded --border-foreground "${JM_UI_MUTED}" --padding "0 1" -- "$@"
   printf '\n'
 }
 
