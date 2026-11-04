@@ -218,7 +218,7 @@ jm_ui_table() {
 }
 
 jm_ui_table_body() {
-  awk -F '\t' -v acc="${JM_UI_ACCENT}" -v ok="${JM_UI_OK}" -v warn="${JM_UI_WARN}" \
+  LC_ALL=C awk -F '\t' -v acc="${JM_UI_ACCENT}" -v ok="${JM_UI_OK}" -v warn="${JM_UI_WARN}" \
     -v bad="${JM_UI_ERR}" -v txt="${JM_UI_TEXT}" -v mut="${JM_UI_MUTED}" -v dash="$1" \
     -f "${JM_LIB}/table.awk"
 }

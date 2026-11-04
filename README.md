@@ -18,7 +18,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 
 </div>
 
-One command, 161 tests, 11 shell modules, and nothing to install beyond a POSIX system, gum and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
+One command, 162 tests, 11 shell modules, and nothing to install beyond a POSIX system, gum and [subliminal](https://github.com/Diaoul/subliminal). `jimaku` is 字幕, Japanese for subtitles. Its companions [kakikomi](https://github.com/gufranco/kakikomi), [kiyome](https://github.com/gufranco/kiyome), [shiwake](https://github.com/gufranco/shiwake) and [yakitsuke](https://github.com/gufranco/yakitsuke) write disks, wipe disks, sort folders and burn Video CDs.
 
 ---
 
