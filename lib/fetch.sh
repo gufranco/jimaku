@@ -59,9 +59,47 @@ jm_kept() {
   jm_json_video "$1" kept
 }
 
+jm_fetch_replacing() {
+  JM_REPLACED=""
+  [ "${JM_FORCE}" = yes ] && [ -f "${JM_FRESH}" ] || return 0
+  jm_backup "${JM_FRESH}" || return 1
+  JM_REPLACED="${JM_BACKUP}"
+}
+
+jm_fetch_unreplaced() {
+  [ -n "${JM_REPLACED}" ] || return 0
+  cmp -s "${JM_FRESH}" "${JM_REPLACED}" && rm -f "${JM_REPLACED}"
+  return 0
+}
+
+jm_fetch_failed() {
+  JM_FAILED=$((JM_FAILED + 1))
+  jm_json_video "$1" failed
+}
+
+jm_fetch_saved() {
+  [ "${JM_JSON}" = yes ] || jm_say "$1: saved a subtitle in ${JM_LANGUAGE}."
+  [ -z "${JM_REPLACED}" ] || [ "${JM_JSON}" = yes ] || jm_say "${JM_FRESH}: kept the replaced subtitle as ${JM_REPLACED}."
+  JM_SAVED=$((JM_SAVED + 1))
+  jm_json_video "$1" saved
+  jm_fetch_stem "$1"
+}
+
+jm_fetch_missed() {
+  jm_fetch_unreplaced
+  jm_warning "no ${JM_LANGUAGE} subtitle found for $1."
+  JM_MISSED=$((JM_MISSED + 1))
+  jm_json_video "$1" missed
+}
+
 jm_fetch() {
   jm_fe_video="$1"
   jm_kept "${jm_fe_video}" && return 0
+  JM_FRESH="${jm_fe_video%.*}.${JM_LANGUAGE}.srt"
+  jm_fetch_replacing || {
+    jm_fetch_failed "${jm_fe_video}"
+    return 0
+  }
   set -- download -l "${JM_LANGUAGE}" -e utf-8
   [ "${JM_FORCE}" = no ] || set -- "$@" -f
   case "${JM_CATEGORIES}:${JM_HEARING}" in
@@ -71,21 +109,16 @@ jm_fetch() {
   *) ;;
   esac
   if ! jm_fe_said="$(jm_fetch_run "${jm_fe_video}" "$@")"; then
+    jm_fetch_unreplaced
     jm_error "subliminal failed for ${jm_fe_video}."
     jm_said subliminal "${jm_fe_said}"
-    JM_FAILED=$((JM_FAILED + 1))
-    jm_json_video "${jm_fe_video}" failed
+    jm_fetch_failed "${jm_fe_video}"
     return 0
   fi
   jm_fe_count="$(jm_fetch_count "${jm_fe_said}")"
-  if [ "${jm_fe_count:-0}" -eq 0 ]; then
-    jm_warning "no ${JM_LANGUAGE} subtitle found for ${jm_fe_video}."
-    JM_MISSED=$((JM_MISSED + 1))
-    jm_json_video "${jm_fe_video}" missed
+  [ "${jm_fe_count:-0}" -eq 0 ] || {
+    jm_fetch_saved "${jm_fe_video}"
     return 0
-  fi
-  [ "${JM_JSON}" = yes ] || jm_say "${jm_fe_video}: saved a subtitle in ${JM_LANGUAGE}."
-  JM_SAVED=$((JM_SAVED + 1))
-  jm_json_video "${jm_fe_video}" saved
-  jm_fetch_stem "${jm_fe_video}"
+  }
+  jm_fetch_missed "${jm_fe_video}"
 }

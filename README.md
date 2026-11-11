@@ -31,7 +31,7 @@ $ jimaku --language pt-BR ~/Movies
 
 Videos: 3 in /Users/me/Movies
 Plan:   pt-BR subtitles, saved as UTF-8 next to each video
-        any subtitle already there is replaced
+        any subtitle already there is replaced and kept as .bak
 
 /Users/me/Movies/Metropolis (1927).mkv: saved a subtitle in pt-BR.
 /Users/me/Movies/Metropolis (1927).pt-BR.srt: converted from iso-8859-1 to

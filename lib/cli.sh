@@ -29,8 +29,9 @@ options:
   --language CODE              the subtitle language, an IETF code such as
                                en, pt-BR or es (default JIMAKU_LANGUAGE,
                                else asked on a terminal, else en)
-  --force | --no-force         replace a subtitle that is already there, or
-                               skip a video that has one (default yes)
+  --force | --no-force         replace a subtitle that is already there,
+                               keeping it as .bak, or skip a video that has
+                               one (default yes)
   --hearing-impaired | --no-hearing-impaired
                                put subtitles for the hearing impaired first,
                                or last (default no)

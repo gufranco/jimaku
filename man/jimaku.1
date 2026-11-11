@@ -64,7 +64,12 @@ matches nothing.
 .TP
 .BR \-\-force ", " \-\-no\-force
 Replace a subtitle that is already there, or skip a video that already has
-one. Default yes.
+one. Default yes. A replaced subtitle is kept beside it as
+.IR name .bak,
+or the first free
+.IR name .bak. n .
+A subtitle that was already there is also kept that way before it is
+converted to UTF-8.
 .TP
 .BR \-\-hearing\-impaired ", " \-\-no\-hearing\-impaired
 Put subtitles for the hearing impaired first, or last. Default no. With a

@@ -35,7 +35,7 @@ jm_summary() {
   jm_summary_where
   jm_say "Plan:   ${JM_LANGUAGE} subtitles, saved as UTF-8 next to each video"
   if [ "${JM_FORCE}" = yes ]; then
-    printf '        any subtitle already there is replaced\n'
+    printf '        any subtitle already there is replaced and kept as .bak\n'
   else
     printf '        a video that already has one is skipped\n'
   fi

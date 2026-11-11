@@ -68,6 +68,7 @@ jm_fetch_target() {
   for jm_ft_file in "${jm_ft_path}"/*; do
     jm_is_video "${jm_ft_file}" && jm_fetch "${jm_ft_file}"
   done
+  JM_FRESH=""
   for jm_ft_file in "${jm_ft_path}"/*.[Ss][Rr][Tt]; do
     [ -f "${jm_ft_file}" ] && jm_utf8 "${jm_ft_file}"
   done

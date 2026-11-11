@@ -43,7 +43,7 @@ download_calls() {
 
   # Assert
   [[ "${status}" -eq 0 ]]
-  [[ "${output}" == $'\n'"Video:  ${FILMS}/Night of the Living Dead (1968).mkv"$'\n'"Plan:   en subtitles, saved as UTF-8 next to each video"$'\n'"        any subtitle already there is replaced"$'\n\n'"${FILMS}/Night of the Living Dead (1968).mkv: saved a subtitle in en."$'\n'"Saved en subtitles for 1 video." ]]
+  [[ "${output}" == $'\n'"Video:  ${FILMS}/Night of the Living Dead (1968).mkv"$'\n'"Plan:   en subtitles, saved as UTF-8 next to each video"$'\n'"        any subtitle already there is replaced and kept as .bak"$'\n\n'"${FILMS}/Night of the Living Dead (1968).mkv: saved a subtitle in en."$'\n'"Saved en subtitles for 1 video." ]]
   [[ -f "${FILMS}/Night of the Living Dead (1968).en.srt" ]]
 }
 
@@ -682,4 +682,167 @@ download_calls() {
   [[ "${status}" -eq 0 ]]
   [[ "${output}" == *"${FILMS}/a.mkv: kept the en subtitle already there."* ]]
   [[ "${output}" == *"Saved en subtitles for 1 video."* ]]
+}
+
+@test "a subtitle replaced by a new download is kept as a backup" {
+  # Arrange
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  local kept
+  kept="$(cat "${FILMS}/a.en.srt.bak")"
+  [[ "${status}" -eq 0 ]]
+  [[ "${kept}" == "old subtitle" ]]
+  [[ "${output}" == *"${FILMS}/a.en.srt: kept the replaced subtitle as ${FILMS}/a.en.srt.bak."* ]]
+}
+
+@test "a replace that finds nothing leaves no backup" {
+  # Arrange
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+  export JIMAKU_FAKE_NONE=a.mkv
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ ! -e "${FILMS}/a.en.srt.bak" ]]
+}
+
+@test "a replace that fails leaves no backup" {
+  # Arrange
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+  export JIMAKU_FAKE_FAIL=a.mkv
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  [[ "${status}" -eq 1 ]]
+  [[ ! -e "${FILMS}/a.en.srt.bak" ]]
+}
+
+@test "a downloaded subtitle is converted without a backup" {
+  # Arrange
+  videos a.mkv
+  subtitle_source '1\n00:00:01,000 --> 00:00:02,000\nOl\341\n'
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ ! -e "${FILMS}/a.en.srt.bak" ]]
+}
+
+@test "a subtitle that was already there keeps its original before it is converted" {
+  # Arrange
+  videos a.mkv
+  printf 'Ol\341\n' >"${FILMS}/old movie.en.srt"
+
+  # Act
+  run jm_test_run "${FILMS}"
+
+  # Assert
+  local bytes
+  bytes="$(jm_test_bytes "${FILMS}/old movie.en.srt.bak")"
+  [[ "${status}" -eq 0 ]]
+  [[ "${bytes}" == "4f6ce10a" ]]
+  [[ "${output}" == *"${FILMS}/old movie.en.srt: kept the original as ${FILMS}/old movie.en.srt.bak."* ]]
+}
+
+@test "a subtitle that was already there keeps its original before its byte order mark goes" {
+  # Arrange
+  videos a.mkv
+  printf '\357\273\277Ola\n' >"${FILMS}/old movie.en.srt"
+
+  # Act
+  run jm_test_run "${FILMS}"
+
+  # Assert
+  local bytes
+  bytes="$(jm_test_bytes "${FILMS}/old movie.en.srt.bak")"
+  [[ "${status}" -eq 0 ]]
+  [[ "${bytes}" == "efbbbf4f6c610a" ]]
+}
+
+@test "a backup never overwrites an earlier one" {
+  # Arrange
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+  printf 'older\n' >"${FILMS}/a.en.srt.bak"
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  local older newer
+  older="$(cat "${FILMS}/a.en.srt.bak")"
+  newer="$(cat "${FILMS}/a.en.srt.bak.1")"
+  [[ "${status}" -eq 0 ]]
+  [[ "${older}" == "older" ]]
+  [[ "${newer}" == "old subtitle" ]]
+}
+
+@test "a subtitle stays as it is when a hundred backups already exist" {
+  # Arrange
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+  local count=1
+  : >"${FILMS}/a.en.srt.bak"
+  while [[ "${count}" -lt 100 ]]; do
+    : >"${FILMS}/a.en.srt.bak.${count}"
+    count=$((count + 1))
+  done
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  local kept
+  kept="$(cat "${FILMS}/a.en.srt")"
+  [[ "${status}" -eq 1 ]]
+  [[ "${kept}" == "old subtitle" ]]
+  [[ "${output}" == *"jimaku: ${FILMS}/a.en.srt.bak to .bak.99 all exist, so ${FILMS}/a.en.srt stays as it is."* ]]
+}
+
+@test "a subtitle stays as it is when its backup cannot be written" {
+  # Arrange
+  local user
+  user="$(id -u)"
+  [[ "${user}" != 0 ]] || skip "root writes into a read-only folder"
+  videos a.mkv
+  printf 'old subtitle\n' >"${FILMS}/a.en.srt"
+  chmod 555 "${FILMS}"
+
+  # Act
+  run jm_test_run "${FILMS}/a.mkv"
+
+  # Assert
+  chmod 755 "${FILMS}"
+  local kept
+  kept="$(cat "${FILMS}/a.en.srt")"
+  [[ "${status}" -eq 1 ]]
+  [[ "${kept}" == "old subtitle" ]]
+  [[ "${output}" == *"jimaku: could not back up ${FILMS}/a.en.srt to ${FILMS}/a.en.srt.bak, so it stays as it is."* ]]
+}
+
+@test "a subtitle that was already there and cannot be converted leaves no backup" {
+  # Arrange
+  videos a.mkv
+  printf 'Ol\341\n' >"${FILMS}/old movie.en.srt"
+  jm_test_shim iconv 'exit 1'
+
+  # Act
+  run jm_test_run "${FILMS}"
+
+  # Assert
+  [[ "${status}" -eq 0 ]]
+  [[ ! -e "${FILMS}/old movie.en.srt.bak" ]]
 }
